@@ -1,0 +1,2319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JetLink — Free URL Shortener with Analytics, QR Codes & Multiple Domains</title>
+<meta name="description" content="JetLink is a free URL shortener: create short links on multiple domains, add media endings and image cards, generate QR codes and track every click in real time.">
+<meta property="og:title" content="JetLink — Free URL Shortener">
+<meta property="og:description" content="Create, share and track short links. Free forever, multiple domains, QR codes and real-time analytics.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f97316'/%3E%3Cpath d='M26 38a8 8 0 0 0 11 0l7-7a8 8 0 1 0-11-11l-3 3' stroke='white' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3Cpath d='M38 26a8 8 0 0 0-11 0l-7 7a8 8 0 1 0 11 11l3-3' stroke='white' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+/* ================= JetLink styles (original) ================= */
+:root{
+  --blue:#2563eb; --blue-dark:#1d4ed8; --navy:#0b1b3a; --navy-2:#10254e;
+  --orange:#f97316; --orange-dark:#ea580c;
+  --ink:#0f1f3d; --muted:#5b6b8c; --line:#e3e9f5;
+  --bg-soft:#f4f7ff; --card:#ffffff; --ok:#16a34a; --err:#dc2626;
+  --radius:16px; --shadow:0 18px 45px rgba(21,52,120,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:#fff;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:15px;color:var(--ink)}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+.hidden{display:none!important}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.header-in{display:flex;align-items:center;gap:26px;height:66px}
+.logo{display:flex;align-items:center;gap:9px;font-size:23px;font-weight:800;letter-spacing:-.3px;color:var(--navy)}
+.logo:hover{text-decoration:none}
+.logo-mark{width:34px;height:34px;border-radius:9px;background:var(--orange);display:flex;align-items:center;justify-content:center;flex:none}
+.logo-mark svg{width:21px;height:21px}
+.logo b{color:var(--navy);font-weight:800}
+.logo span{color:var(--orange)}
+nav.mainnav{display:flex;gap:22px;margin-left:8px}
+nav.mainnav a{color:var(--ink);font-weight:600;font-size:15px}
+nav.mainnav a:hover{color:var(--blue);text-decoration:none}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;border-radius:999px;padding:10px 20px;font-weight:700;font-size:15px;background:var(--blue);color:#fff;transition:.15s}
+.btn:hover{background:var(--blue-dark);text-decoration:none}
+.btn.orange{background:var(--orange)}
+.btn.orange:hover{background:var(--orange-dark)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btn.small{padding:7px 14px;font-size:13.5px}
+.btn.danger{background:var(--err)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.linklike{background:none;border:0;color:var(--blue);font-weight:600;font-size:14.5px;padding:4px}
+.user-chip{font-weight:700;color:var(--navy);font-size:14.5px}
+.hamburger{display:none;background:none;border:0;font-size:26px;line-height:1;color:var(--navy);padding:6px}
+.mobile-menu{display:none;border-top:1px solid var(--line);padding:12px 20px 18px;background:#fff}
+.mobile-menu a{display:block;padding:9px 2px;font-weight:600;color:var(--ink)}
+.mobile-menu.open{display:block}
+
+/* ---------- demo banner ---------- */
+#demoBanner{background:#fff7ed;border-bottom:1px solid #fed7aa;color:#9a3412;font-size:13.5px;text-align:center;padding:8px 14px;font-weight:600}
+
+/* ---------- hero ---------- */
+.hero{background:linear-gradient(180deg,#eef3ff 0%,#f3f0ff 55%,#ffffff 100%);position:relative;overflow:hidden;padding:58px 0 30px}
+.hero:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(37,99,235,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,.07) 1px,transparent 1px);background-size:44px 44px;pointer-events:none}
+.hero .wrap{position:relative}
+.badge{display:inline-flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:700;color:var(--navy);box-shadow:0 4px 14px rgba(21,52,120,.06)}
+.badge .new{background:var(--orange);color:#fff;border-radius:999px;padding:1px 8px;font-size:11.5px}
+.hero h1{font-size:clamp(30px,5vw,50px);line-height:1.12;letter-spacing:-1px;color:var(--navy);max-width:760px;margin:20px 0 14px}
+.hero h1 .hl{color:var(--blue)}
+.hero p.sub{font-size:17.5px;color:var(--muted);max-width:640px}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 26px}
+.chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-size:13.5px;font-weight:600;color:var(--navy)}
+.chip:before{content:"✓";color:var(--ok);font-weight:800;margin-right:6px}
+
+/* ---------- shortener card ---------- */
+.shortener{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:22px;max-width:820px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{border:1px solid var(--line);background:var(--bg-soft);border-radius:999px;padding:8px 16px;font-weight:700;font-size:14px;color:var(--muted)}
+.tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.field input[type=text],.field input[type=url],.field input[type=email],.field input[type=password],.field input[type=number],.field select,.field textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;outline:none;transition:.15s}
+.field textarea{min-height:90px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.rowflex{display:flex;gap:10px}
+.rowflex .grow{flex:1}
+.preview-line{background:var(--bg-soft);border:1px dashed #c3d2f2;border-radius:12px;padding:10px 14px;font-size:14.5px;color:var(--navy);word-break:break-all}
+.preview-line b{color:var(--blue)}
+.hint{font-size:13px;color:var(--muted);margin-top:5px}
+.err-text{color:var(--err);font-size:13.5px;font-weight:600;margin-top:5px;min-height:18px}
+.ending-btns{display:flex;gap:8px;flex-wrap:wrap}
+.ending-btn{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:8px 13px;font-weight:700;font-size:14px;color:var(--muted)}
+.ending-btn.active{border-color:var(--orange);color:var(--orange-dark);background:#fff7ed}
+.switch{position:relative;width:46px;height:26px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.switch .track{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;transition:.2s}
+.switch .track:before{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.2s}
+.switch input:checked + .track{background:var(--blue)}
+.switch input:checked + .track:before{transform:translateX(20px)}
+.inline-check{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:600}
+.radio-row{display:flex;gap:16px}
+details.alias-box{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:4px 0 13px}
+details.alias-box summary{cursor:pointer;font-weight:700;color:var(--navy);font-size:14.5px}
+.avail-ok{color:var(--ok);font-size:13px;font-weight:700}
+.avail-bad{color:var(--err);font-size:13px;font-weight:700}
+
+/* image card live preview */
+.imgcard-preview{position:relative;border-radius:14px;overflow:hidden;background:#0b1b3a;max-width:520px}
+.imgcard-preview img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;opacity:.96}
+.imgcard-preview .ic-title{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 12px;color:#fff;font-weight:700;font-size:16px;background:linear-gradient(transparent,rgba(0,0,0,.68))}
+.imgcard-preview .ic-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:62px;height:62px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.imgcard-preview .ic-time{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;font-weight:700;border-radius:6px;padding:2px 7px}
+.imgcard-preview.pos-right .ic-title{text-align:right}
+
+/* ---------- strips & stats ---------- */
+.domain-strip{background:var(--blue);color:#fff;padding:20px 0;margin-top:44px}
+.domain-strip .wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.domain-strip p{font-size:16.5px;font-weight:600;flex:1;min-width:260px}
+.trust{display:flex;gap:22px;flex-wrap:wrap;padding:16px 0 4px;font-weight:600;color:var(--navy);font-size:14.5px}
+.trust span:before{content:"✓ ";color:var(--ok);font-weight:800}
+.statsbar{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0 6px;max-width:820px}
+.statbox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+.statbox .num{font-size:27px;font-weight:800;color:var(--navy)}
+.statbox .lbl{font-size:13px;color:var(--muted);font-weight:600}
+.marquee{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:30px;background:#fff}
+.marquee-track{display:flex;gap:44px;white-space:nowrap;padding:12px 0;font-weight:700;color:#8aa0c6;font-size:15px;animation:mq 26s linear infinite;width:max-content}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- sections ---------- */
+section.block{padding:64px 0}
+section.block.alt{background:var(--bg-soft)}
+.eyebrow{text-transform:uppercase;letter-spacing:1.6px;font-size:12px;font-weight:800;color:var(--orange-dark);text-align:center}
+h2.title{font-size:clamp(25px,3.6vw,36px);letter-spacing:-.6px;color:var(--navy);text-align:center;margin:8px auto 10px;max-width:680px;line-height:1.2}
+p.lead{text-align:center;color:var(--muted);max-width:620px;margin:0 auto 36px;font-size:16.5px}
+.chip-cloud{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:900px;margin:0 auto}
+.domain-chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-weight:600;font-size:14px;color:var(--navy)}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.cards2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+.card h3{color:var(--navy);font-size:17.5px;margin-bottom:8px}
+.card p{color:var(--muted);font-size:14.8px}
+.card .icon{width:44px;height:44px;border-radius:12px;background:#eaf0ff;display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:13px}
+.card ul{list-style:none;margin-top:9px}
+.card ul li{font-size:14.5px;color:var(--muted);padding:3px 0}
+.card ul li:before{content:"✓ ";color:var(--ok);font-weight:800}
+pre.code{background:var(--navy);color:#cfe1ff;border-radius:12px;padding:15px;font-size:13px;overflow-x:auto;line-height:1.5;margin-top:10px}
+.og-mock{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:12px;background:#fff}
+.og-mock img{width:100%;height:110px;object-fit:cover;display:block;background:#dbe6ff}
+.og-mock .og-body{padding:10px 12px}
+.og-mock .og-t{font-weight:700;color:var(--navy);font-size:14.5px}
+.og-mock .og-d{font-size:13px;color:var(--muted)}
+.mini-bars{display:flex;align-items:flex-end;gap:5px;height:74px;margin-top:12px}
+.mini-bars i{flex:1;background:linear-gradient(180deg,#60a5fa,#2563eb);border-radius:4px 4px 0 0;display:block}
+
+/* analytics panel */
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:0 8px 26px rgba(21,52,120,.05)}
+.kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+.kv:last-child{border-bottom:0}
+.kv b{color:var(--navy)}
+.feed-item{display:flex;gap:11px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+.feed-item:last-child{border-bottom:0}
+.feed-item .dot{width:9px;height:9px;border-radius:50%;background:var(--ok);flex:none}
+.empty-note{color:var(--muted);font-size:14.5px;padding:12px 0;text-align:center}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.step{text-align:center;padding:10px}
+.step .n{width:46px;height:46px;border-radius:50%;background:var(--orange);color:#fff;font-weight:800;font-size:19px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.step h3{color:var(--navy);margin-bottom:6px}
+.step p{color:var(--muted);font-size:15px}
+
+/* FAQ */
+.faq-list{max-width:780px;margin:0 auto}
+.faq-item{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:#fff;overflow:hidden}
+.faq-item button{width:100%;text-align:left;background:none;border:0;padding:16px 18px;font-weight:700;font-size:15.5px;color:var(--navy);display:flex;justify-content:space-between;gap:12px}
+.faq-item .faq-a{display:none;padding:0 18px 16px;color:var(--muted);font-size:15px}
+.faq-item.open .faq-a{display:block}
+.faq-item .chev{color:var(--orange);font-weight:800}
+
+/* final CTA */
+.final-cta{background:var(--navy);border-radius:24px;padding:52px 30px;text-align:center;color:#fff;margin:10px auto 70px;max-width:1160px}
+.final-cta h2{font-size:clamp(24px,3.4vw,34px);letter-spacing:-.5px;margin-bottom:10px}
+.final-cta p{color:#b9c8e8;max-width:560px;margin:0 auto 22px}
+
+/* footer */
+footer{background:#f7f9ff;border-top:1px solid var(--line);padding:48px 0 26px}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:26px}
+.foot-grid h4{color:var(--navy);font-size:14px;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.foot-grid a{display:block;color:var(--muted);font-size:14.5px;padding:3.5px 0}
+.foot-grid p{color:var(--muted);font-size:14.5px;max-width:300px}
+.copyright{border-top:1px solid var(--line);margin-top:32px;padding-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
+
+/* ---------- generic page / prose ---------- */
+.pagehead{padding:52px 0 8px;text-align:center}
+.pagehead h1{font-size:clamp(27px,4vw,40px);color:var(--navy);letter-spacing:-.7px}
+.pagehead p{color:var(--muted);max-width:600px;margin:10px auto 0;font-size:16.5px}
+.prose{max-width:800px;margin:0 auto;padding:26px 20px 70px}
+.prose h2{color:var(--navy);margin:26px 0 8px;font-size:21px}
+.prose p{color:#33456b;margin-bottom:12px}
+.prose ul{margin:0 0 12px 20px;color:#33456b}
+.template-note{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:600;margin-bottom:20px}
+
+/* pricing */
+.price-card{max-width:520px;margin:0 auto;background:#fff;border:2px solid var(--blue);border-radius:20px;padding:32px;box-shadow:var(--shadow)}
+.price-card .amount{font-size:44px;font-weight:800;color:var(--navy)}
+.price-card ul{list-style:none;margin:18px 0}
+.price-card ul li{padding:6px 0;color:#33456b}
+.price-card ul li:before{content:"✓ ";color:var(--ok);font-weight:800}
+table.cmp{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14.8px}
+table.cmp th,table.cmp td{padding:11px 14px;border-bottom:1px solid var(--line);text-align:left}
+table.cmp th{background:var(--bg-soft);color:var(--navy)}
+table.cmp tr:last-child td{border-bottom:0}
+
+/* blog */
+.blog-tools{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:22px}
+.blog-tools input[type=text]{border:1.5px solid var(--line);border-radius:999px;padding:10px 18px;min-width:260px;outline:none}
+.pill{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 15px;font-weight:700;font-size:13.5px;color:var(--muted)}
+.pill.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.blog-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+.blog-card .thumb{height:130px;display:flex;align-items:center;justify-content:center;font-size:40px;color:#fff}
+.blog-card .b-body{padding:18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.blog-card .cat{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--orange-dark)}
+.blog-card h3{color:var(--navy);font-size:17px;line-height:1.35}
+.blog-card p{color:var(--muted);font-size:14.3px;flex:1}
+.blog-meta{font-size:13px;color:var(--muted)}
+.pagination{display:flex;gap:8px;justify-content:center;margin-top:26px}
+.toc{background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:18px 0}
+.toc a{display:block;padding:3px 0;font-size:14.5px}
+.crumb{font-size:13.5px;color:var(--muted);margin-bottom:8px}
+
+/* auth */
+.auth-grid{display:grid;grid-template-columns:1.05fr .95fr;max-width:1020px;margin:44px auto 70px;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);background:#fff}
+.auth-form{padding:38px 36px}
+.auth-form h1{font-size:26px;color:var(--navy);margin-bottom:6px}
+.auth-form .sub{color:var(--muted);margin-bottom:22px;font-size:15px}
+.auth-side{background:linear-gradient(160deg,var(--navy),var(--navy-2));color:#fff;padding:38px 34px;display:flex;flex-direction:column;gap:16px}
+.auth-side h2{font-size:24px;line-height:1.3}
+.auth-side p{color:#b9c8e8;font-size:15px}
+.auth-side .mini-stats{display:flex;gap:22px}
+.auth-side .mini-stats .num{font-size:22px;font-weight:800}
+.auth-side .mini-stats .lbl{font-size:12.5px;color:#9db1d9}
+.auth-side ul{list-style:none}
+.auth-side ul li{padding:5px 0;color:#dbe5fb;font-size:14.8px}
+.auth-side ul li:before{content:"✓ ";color:#4ade80;font-weight:800}
+
+/* dashboard */
+.dash{display:grid;grid-template-columns:220px 1fr;gap:20px;max-width:1160px;margin:26px auto 70px;padding:0 20px;align-items:start}
+.dash-side{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px;position:sticky;top:84px}
+.dash-side button{display:block;width:100%;text-align:left;background:none;border:0;padding:10px 12px;border-radius:10px;font-weight:700;font-size:14.8px;color:var(--muted)}
+.dash-side button.active{background:var(--bg-soft);color:var(--navy)}
+.dash-main{min-width:0}
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.stat-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.stat-card .num{font-size:25px;font-weight:800;color:var(--navy)}
+.stat-card .lbl{font-size:13px;color:var(--muted);font-weight:600}
+table.links{width:100%;border-collapse:collapse;font-size:14px;background:#fff}
+table.links th,table.links td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.links th{color:var(--navy);background:var(--bg-soft)}
+table.links td.dest{max-width:230px;word-break:break-all;color:var(--muted)}
+.mini-btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 10px;font-size:12.8px;font-weight:700;color:var(--navy);margin:2px 2px 2px 0}
+.mini-btn:hover{border-color:var(--blue);color:var(--blue)}
+.mini-btn.red{color:var(--err)}
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
+canvas.chart{width:100%;height:210px;display:block}
+
+/* modal + toast */
+.modal-overlay{position:fixed;inset:0;background:rgba(7,17,40,.55);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:20px;max-width:520px;width:100%;padding:26px;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow)}
+.modal h3{color:var(--navy);font-size:20px;margin-bottom:4px}
+.modal .sub{color:var(--muted);font-size:14.5px;margin-bottom:16px}
+.qr-box{text-align:center;padding:14px;background:var(--bg-soft);border-radius:14px;margin:14px 0}
+.qr-box img{width:200px;height:200px}
+#toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{background:var(--navy);color:#fff;padding:11px 20px;border-radius:999px;font-weight:600;font-size:14.5px;box-shadow:0 10px 26px rgba(0,0,0,.25);animation:tin .25s ease}
+.toast.err{background:var(--err)}
+@keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.spinner{display:inline-block;width:16px;height:16px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-3px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* redirect / card landing */
+.landing{min-height:100vh;background:var(--navy);display:flex;align-items:center;justify-content:center;padding:22px}
+.landing .imgcard-preview{max-width:720px;width:100%;cursor:pointer}
+.notfound{text-align:center;padding:90px 20px}
+.notfound .big{font-size:64px;font-weight:800;color:var(--navy)}
+.search-row{max-width:560px;margin:0 auto 26px}
+.search-row input{width:100%;border:1.5px solid var(--line);border-radius:999px;padding:13px 20px;outline:none}
+.search-row input:focus{border-color:var(--blue)}
+
+/* responsive */
+@media(max-width:960px){
+  nav.mainnav{display:none}
+  .hamburger{display:block}
+  .cards3,.cards4,.steps{grid-template-columns:1fr 1fr}
+  .auth-grid{grid-template-columns:1fr}
+  .auth-side{order:-1}
+  .dash{grid-template-columns:1fr}
+  .dash-side{position:static;display:flex;flex-wrap:wrap;gap:4px}
+  .dash-side button{width:auto}
+  .stat-cards{grid-template-columns:1fr 1fr}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .cards3,.cards2,.cards4,.steps,.grid2{grid-template-columns:1fr}
+  .statsbar{grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .statbox .num{font-size:20px}
+  .header-right .login-link{display:none}
+  .shortener{padding:16px}
+  .auth-form{padding:28px 20px}
+}
+.btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border:1.5px solid #dfe3ea;border-radius:999px;background:#fff;color:var(--navy);font-weight:700;font-size:15px;cursor:pointer;transition:.15s}
+.btn-google:hover{border-color:#b9c2d0;background:#f7f9ff}
+.btn-google:disabled{opacity:.6;cursor:wait}
+.btn-google svg{flex:none}
+.auth-or{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--muted);font-size:12.5px;font-weight:600}
+.auth-or:before,.auth-or:after{content:"";flex:1;height:1px;background:#e3e7ee}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <div class="wrap header-in">
+    <a class="logo" href="#/">
+      <span class="logo-mark"><svg viewBox="0 0 64 64" fill="none"><path d="M26 38a8 8 0 0 0 11 0l7-7a8 8 0 1 0-11-11l-3 3" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M38 26a8 8 0 0 0-11 0l-7 7a8 8 0 1 0 11 11l3-3" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg></span>
+      <span><b>Jet</b><span>Link</span></span>
+    </a>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
+    <nav class="mainnav">
+      <a href="#features" data-scroll="features">Features</a>
+      <a href="#analytics" data-scroll="analytics">Analytics</a>
+      <a href="#/pricing">Pricing</a>
+      <a href="#/blog">Blog</a>
+      <a href="#/help">Help</a>
+      <a href="#/faq">FAQ</a>
+    </nav>
+    <div class="header-right" id="headerAuth">
+      <a class="login-link" href="#/login" style="font-weight:700;color:var(--navy)">Log in</a>
+      <a class="btn" href="#/register">Sign up now</a>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#features" data-scroll="features">Features</a>
+    <a href="#analytics" data-scroll="analytics">Analytics</a>
+    <a href="#/pricing">Pricing</a>
+    <a href="#/blog">Blog</a>
+    <a href="#/help">Help</a>
+    <a href="#/faq">FAQ</a>
+    <a href="#/login">Log in</a>
+    <a href="#/register">Sign up now</a>
+    <a href="#/dashboard" class="hidden" id="mmDash">Dashboard</a>
+    <a href="#/admin" class="hidden" id="mmAdmin">Admin</a>
+  </div>
+</header>
+<div id="demoBanner" class="hidden">Demo mode — data is stored only in this browser. Add a Firebase config in index.html for real accounts &amp; a shared database.</div>
+
+<main id="app">
+<!-- ================= VIEW: HOME ================= -->
+<section data-view="home">
+  <div class="hero">
+    <div class="wrap">
+      <span class="badge"><span class="new">New</span> Free forever · Multiple domains · No credit card</span>
+      <h1>The free <span class="hl">URL shortener</span> that tracks every click</h1>
+      <p class="sub">Paste a long link, get a short one on the domain you like, share it anywhere — and watch the clicks roll in, live.</p>
+      <div class="chips">
+        <span class="chip">Smarter links</span>
+        <span class="chip">Faster redirects</span>
+        <span class="chip">Better analytics</span>
+      </div>
+      <div id="homeShortener"></div>
+      <div class="trust">
+        <span>Links never expire</span><span>Free QR codes</span><span>Privacy-first analytics</span>
+      </div>
+      <div class="statsbar">
+        <div class="statbox"><div class="num" id="statLinks">0</div><div class="lbl">Links created (this site)</div></div>
+        <div class="statbox"><div class="num" id="statClicks">0</div><div class="lbl">Total clicks tracked</div></div>
+        <div class="statbox"><div class="num" id="statToday">0</div><div class="lbl">Clicks today</div></div>
+      </div>
+      <p class="hint">Live data from this deployment — counted from the links actually stored here.</p>
+    </div>
+    <div class="marquee"><div class="marquee-track" id="marqueeTrack"></div></div>
+  </div>
+
+  <div class="domain-strip">
+    <div class="wrap">
+      <p><strong>Multiple domains, free to use.</strong> Sign up, pick the short domains you like, and shorten the same link on any of them as many times as you want.</p>
+      <a class="btn orange" href="#/register">Sign up now — it is free</a>
+    </div>
+  </div>
+
+  <section class="block" id="domainsBlock">
+    <div class="wrap">
+      <div class="eyebrow">Multiple domains</div>
+      <h2 class="title">One link, many doors</h2>
+      <p class="lead">Choose the domain that fits your post. Connect domains you own and they appear in the shortener automatically.</p>
+      <div class="chip-cloud" id="domainChips"></div>
+    </div>
+  </section>
+
+  <section class="block alt" id="features">
+    <div class="wrap">
+      <div class="eyebrow">Everything you need</div>
+      <h2 class="title">More than a link shortener</h2>
+      <p class="lead">A complete little traffic toolkit for creators, marketers and developers.</p>
+      <div class="cards3">
+        <div class="card"><div class="icon">📊</div><h3>Real-time analytics</h3><p>Every click is counted the second it happens, with country, device and referrer breakdowns.</p><div class="mini-bars" id="featureBars"></div></div>
+        <div class="card"><div class="icon">⚡</div><h3>Lightning-fast redirects</h3><p>Short links resolve instantly — no waiting pages, no interstitials standing between your visitor and the content.</p><ul><li>Cached lookups</li><li>Direct redirect</li><li>Works everywhere</li></ul></div>
+        <div class="card"><div class="icon">🖼️</div><h3>Social previews</h3><p>Set the title, description and image people see when your link is shared on social apps.</p><div class="og-mock"><img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='110'%3E%3Crect width='400' height='110' fill='%232563eb'/%3E%3Ccircle cx='200' cy='55' r='24' fill='%23f97316'/%3E%3C/svg%3E"><div class="og-body"><div class="og-t">Your page title here</div><div class="og-d">A short description that makes people tap.</div></div></div></div>
+        <div class="card"><div class="icon">🌐</div><h3>Multiple domains</h3><p>Shorten the same destination on several domains, so every audience gets a link that looks right.</p><div id="featureDomains" style="margin-top:10px"></div></div>
+        <div class="card"><div class="icon">🔳</div><h3>QR codes</h3><p>Every link comes with a print-ready QR code you can download as PNG or SVG for flyers, menus and packaging.</p></div>
+        <div class="card"><div class="icon">📋</div><h3>Bulk shorten</h3><p>Paste a whole list of links and get a short link for each one in a single go — then export everything as CSV.</p><pre class="code">long link  →  short link
+shop…/sale  →  /k3x9a
+youtu.be/…  →  /p82mq.mp4</pre></div>
+        <div class="card"><div class="icon">🛠️</div><h3>Developer API</h3><p>Create and manage links from your own apps, bots and scripts with a simple REST API and a personal API key.</p><pre class="code">curl -X POST /api/v1/links \
+  -H "x-api-key: YOUR_KEY" \
+  -d '{"url":"https://…"}'</pre></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="analytics">
+    <div class="wrap">
+      <div class="eyebrow">Live analytics</div>
+      <h2 class="title">Know exactly where every click comes from</h2>
+      <p class="lead">Clicks are counted instantly and broken down by country, referrer and device. Export any link's report as CSV.</p>
+      <div class="cards3" style="align-items:start">
+        <div class="panel"><h3 style="color:var(--navy);margin-bottom:8px">Total clicks</h3><div style="font-size:34px;font-weight:800;color:var(--navy)" id="anTotalClicks">0</div><p class="hint">Across all links stored on this site.</p><a class="btn small" href="#/register" style="margin-top:12px">Start tracking for free</a></div>
+        <div class="panel"><h3 style="color:var(--navy);margin-bottom:8px">Top countries</h3><div id="anCountries"><p class="empty-note">No clicks yet — share a short link to see data here.</p></div></div>
+        <div class="panel"><h3 style="color:var(--navy);margin-bottom:8px">Recent clicks</h3><div id="anFeed"><p class="empty-note">No clicks yet.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block alt">
+    <div class="wrap">
+      <div class="eyebrow">How it works</div>
+      <h2 class="title">Three steps. Zero friction.</h2>
+      <p class="lead"></p>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><h3>Paste your link</h3><p>Drop any long URL into the box at the top — no account needed to try it.</p></div>
+        <div class="step"><div class="n">2</div><h3>Share it anywhere</h3><p>Copy the short link or download its QR code for print, posts and packaging.</p></div>
+        <div class="step"><div class="n">3</div><h3>Watch the clicks</h3><p>Sign up free to keep your links and see real-time stats for every one of them.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <div class="eyebrow">Built for</div>
+      <h2 class="title">Whatever you share, share it smarter</h2>
+      <p class="lead"></p>
+      <div class="cards4">
+        <div class="card"><div class="icon">🎬</div><h3>Creators</h3><p>Bio links, video drops and sponsor links with click proof for brand deals.</p></div>
+        <div class="card"><div class="icon">📣</div><h3>Marketers</h3><p>One clean link per channel, so you can see which campaign actually works.</p></div>
+        <div class="card"><div class="icon">🏪</div><h3>Businesses</h3><p>QR codes for menus, flyers and packaging that you can re-point any time.</p></div>
+        <div class="card"><div class="icon">👨‍💻</div><h3>Developers</h3><p>Generate links programmatically from your app, bot or CI pipeline.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block alt">
+    <div class="wrap">
+      <div class="eyebrow">Guides</div>
+      <h2 class="title">Learn more about short links</h2>
+      <p class="lead">Practical how-tos for sharing, tracking and growing with your links.</p>
+      <div class="cards3" id="homeGuides"></div>
+      <div style="text-align:center;margin-top:24px"><a class="btn ghost" href="#/blog">All articles →</a></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <div class="eyebrow">FAQ</div>
+      <h2 class="title">Questions? Answers.</h2>
+      <p class="lead"></p>
+      <div class="faq-list" id="homeFaq"></div>
+      <div style="text-align:center;margin-top:20px"><a class="btn ghost" href="#/faq">See the full FAQ →</a></div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="final-cta">
+      <h2>Ready to take control of your links?</h2>
+      <p>Free forever for individuals. Set up in under a minute — no credit card required.</p>
+      <a class="btn orange" href="#/register">Create your free account</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= VIEW: PRICING ================= -->
+<section data-view="pricing" class="hidden">
+  <div class="pagehead wrap"><h1>Simple pricing — free, really</h1><p>One plan, everything included. We keep the lights on with optional extras later, never by charging for the basics.</p></div>
+  <div class="wrap" style="padding-bottom:20px">
+    <div class="price-card">
+      <div style="font-weight:800;color:var(--orange-dark);text-transform:uppercase;letter-spacing:1px;font-size:13px">Free plan</div>
+      <div><span class="amount">$0</span> <span style="color:var(--muted)">/ forever</span></div>
+      <ul>
+        <li>Up to 10,000 links</li>
+        <li>500 new links per day</li>
+        <li>All short domains in the pool</li>
+        <li>Custom aliases</li>
+        <li>QR codes (PNG &amp; SVG)</li>
+        <li>Social preview cards (image cards)</li>
+        <li>Bulk shorten up to 1,000 links</li>
+        <li>Developer API access</li>
+        <li>Real-time analytics</li>
+        <li>30-day click history</li>
+      </ul>
+      <a class="btn" href="#/register" style="width:100%">Sign up free</a>
+    </div>
+  </div>
+  <section class="block" style="padding-top:26px">
+    <div class="wrap">
+      <h2 class="title">Guest vs free account</h2>
+      <p class="lead"></p>
+      <div style="max-width:820px;margin:0 auto;overflow-x:auto">
+      <table class="cmp">
+        <tr><th>Feature</th><th>Guest</th><th>Free account</th></tr>
+        <tr><td>Shorten a link</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Choose a domain</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Media endings (.mp4, .video…)</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Custom alias</td><td>—</td><td>✓</td></tr>
+        <tr><td>QR code download</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Link dashboard &amp; editing</td><td>—</td><td>✓</td></tr>
+        <tr><td>Click analytics per link</td><td>—</td><td>✓</td></tr>
+        <tr><td>Bulk shorten</td><td>—</td><td>✓</td></tr>
+        <tr><td>API key</td><td>—</td><td>✓</td></tr>
+        <tr><td>Links kept after browser is cleared</td><td>—</td><td>✓ (with Firebase / server)</td></tr>
+      </table>
+      </div>
+      <div style="height:36px"></div>
+      <div class="faq-list" id="pricingFaq"></div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= VIEW: BLOG ================= -->
+<section data-view="blog" class="hidden">
+  <div class="pagehead wrap"><h1>The JetLink blog</h1><p>Guides, comparisons and developer notes about short links and the traffic behind them.</p></div>
+  <div class="wrap" style="padding-bottom:70px">
+    <div class="blog-tools">
+      <input type="text" id="blogSearch" placeholder="Search articles…">
+      <span id="blogCats"></span>
+    </div>
+    <div class="cards3" id="blogGrid"></div>
+    <div class="pagination" id="blogPager"></div>
+  </div>
+</section>
+
+<!-- ================= VIEW: ARTICLE ================= -->
+<section data-view="article" class="hidden">
+  <div class="wrap" style="max-width:820px;padding-top:40px;padding-bottom:70px" id="articleBody"></div>
+</section>
+
+<!-- ================= VIEW: HELP ================= -->
+<section data-view="help" class="hidden">
+  <div class="pagehead wrap"><h1>How can we help?</h1><p>Search the guides or browse by topic. Still stuck? <a href="#/contact">Contact us</a>.</p></div>
+  <div class="wrap" style="padding-bottom:70px">
+    <div class="search-row"><input type="text" id="helpSearch" placeholder="Search help topics…"></div>
+    <div class="cards4" style="margin-bottom:30px">
+      <div class="card"><div class="icon">🔗</div><h3>Creating links</h3><p>Short links, aliases, domains and endings.</p></div>
+      <div class="card"><div class="icon">🖼️</div><h3>Cards &amp; media</h3><p>Image cards and media link endings explained.</p></div>
+      <div class="card"><div class="icon">📊</div><h3>Analytics</h3><p>Clicks, countries, devices and exports.</p></div>
+      <div class="card"><div class="icon">🛠️</div><h3>API &amp; account</h3><p>API keys, passwords and account settings.</p></div>
+    </div>
+    <h2 style="color:var(--navy);margin-bottom:14px">Popular topics</h2>
+    <div class="faq-list" id="helpTopics" style="margin:0"></div>
+  </div>
+</section>
+
+<!-- ================= VIEW: FAQ ================= -->
+<section data-view="faq" class="hidden">
+  <div class="pagehead wrap"><h1>Frequently asked questions</h1><p>Everything people usually ask before they start shortening.</p></div>
+  <div class="wrap" style="padding-bottom:70px" id="faqGroups"></div>
+</section>
+
+<!-- ================= VIEW: ABOUT ================= -->
+<section data-view="about" class="hidden">
+  <div class="pagehead wrap"><h1>About JetLink</h1><p>A small, fast link shortener built for people who share things for a living.</p></div>
+  <div class="prose">
+    <h2>Our mission</h2>
+    <p>Long links are ugly, break in messages and tell you nothing after you share them. JetLink exists to fix that: turn any link into a short, clean one you can share anywhere — and learn from every click it gets.</p>
+    <h2>What we do</h2>
+    <p>We shorten links on multiple domains, generate QR codes, build social preview cards and media links, and count every click with privacy-first analytics. Creators use us for video drops, marketers for campaigns, businesses for print, and developers through our API.</p>
+    <h2>Why is it free?</h2>
+    <p>Shortening a link costs very little to run. We would rather grow a big, happy free user base than charge people for the basics. If paid extras ever arrive, the free plan described on the pricing page stays free.</p>
+    <h2>Privacy, briefly</h2>
+    <p>We count clicks, not people. Visitor data is aggregated (country, device type, referrer) and we never sell it. The full details live in our <a href="#/privacy">privacy policy</a>.</p>
+    <h2>Company details</h2>
+    <p><b>Owner / Developer:</b> Dev X Sabbir</p>
+    <p><b>Product:</b> JetLink — free URL shortener with analytics, QR codes and image cards.</p>
+    <p><b>Support:</b> Reach Dev X Sabbir's support team through the <a href="#/contact">contact page</a> or by email at [Your Support Email].</p>
+  </div>
+</section>
+
+<!-- ================= VIEW: CONTACT ================= -->
+<section data-view="contact" class="hidden">
+  <div class="pagehead wrap"><h1>Contact us</h1><p>Questions, feedback or a partnership idea — send a message and Dev X Sabbir's support team will get back to you.</p></div>
+  <div class="wrap" style="max-width:820px;padding-bottom:26px">
+    <div class="cards3">
+      <div class="card"><div class="icon">✉️</div><h3>Email support</h3><p>Write to Dev X Sabbir's support desk at <b>[Your Support Email]</b> — we usually reply within a couple of working days.</p></div>
+      <div class="card"><div class="icon">💬</div><h3>Message form</h3><p>Use the form below for account help, API questions or feedback. Messages land in the admin panel of Dev X Sabbir.</p></div>
+      <div class="card"><div class="icon">🛡️</div><h3>Abuse reports</h3><p>Found a harmful short link? Please use the dedicated <a href="#/report-abuse">Report abuse</a> page so our team can review it fast.</p></div>
+    </div>
+  </div>
+  <div class="wrap" style="max-width:640px;padding-bottom:70px">
+    <form id="contactForm" class="panel" novalidate>
+      <div class="field"><label for="ctName">Your name</label><input type="text" id="ctName" required></div>
+      <div class="field"><label for="ctEmail">Email</label><input type="email" id="ctEmail" required></div>
+      <div class="field"><label for="ctSubject">Subject</label>
+        <select id="ctSubject"><option>General question</option><option>Account help</option><option>API / developer</option><option>Business / partnership</option><option>Other</option></select></div>
+      <div class="field"><label for="ctMsg">Message</label><textarea id="ctMsg" required></textarea></div>
+      <div class="err-text" id="ctErr"></div>
+      <button class="btn" type="submit" style="width:100%">Send message</button>
+    </form>
+  </div>
+</section>
+
+<!-- ================= VIEW: REPORT ABUSE ================= -->
+<section data-view="report-abuse" class="hidden">
+  <div class="pagehead wrap"><h1>Report abuse</h1><p>Found a JetLink short link that leads to phishing, malware or other harmful content? Tell us and we will review it.</p></div>
+  <div class="wrap" style="max-width:640px;padding-bottom:70px">
+    <form id="reportForm" class="panel" novalidate>
+      <div class="field"><label for="rpUrl">The short link (or its code)</label><input type="text" id="rpUrl" placeholder="e.g. abc123" required></div>
+      <div class="field"><label for="rpEmail">Your email</label><input type="email" id="rpEmail" required></div>
+      <div class="field"><label for="rpReason">Reason</label>
+        <select id="rpReason"><option>Phishing</option><option>Malware</option><option>Spam</option><option>Copyright / DMCA</option><option>Other abuse</option></select></div>
+      <div class="field"><label for="rpDetails">Details</label><textarea id="rpDetails" placeholder="Anything that helps us review faster…"></textarea></div>
+      <div class="err-text" id="rpErr"></div>
+      <button class="btn danger" type="submit" style="width:100%">Submit report</button>
+    </form>
+  </div>
+</section>
+
+<!-- ================= VIEW: LEGAL (generated) ================= -->
+<section data-view="legal" class="hidden">
+  <div class="pagehead wrap"><h1 id="legalTitle"></h1></div>
+  <div class="prose" id="legalBody"></div>
+</section>
+
+<!-- ================= VIEW: LOGIN ================= -->
+<section data-view="login" class="hidden">
+  <div class="wrap"><div class="auth-grid">
+    <div class="auth-form">
+      <h1>Welcome back</h1><p class="sub">Log in to manage your links and see your stats.</p>
+      <form id="loginForm" novalidate>
+        <div class="field"><label for="liEmail">Email</label><input type="email" id="liEmail" autocomplete="email" required></div>
+        <div class="field"><label for="liPass">Password</label><input type="password" id="liPass" autocomplete="current-password" required></div>
+        <div class="field inline-check"><input type="checkbox" id="liKeep" checked style="width:17px;height:17px"><label for="liKeep" style="margin:0;font-weight:600">Keep me signed in</label></div>
+        <div class="err-text" id="liErr"></div>
+        <button class="btn" type="submit" id="liBtn" style="width:100%">Log in</button>
+      </form>
+      <div class="auth-or">or</div>
+      <button class="btn-google" type="button" id="liGoogle"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3l5.7-5.7C34.3 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3l5.7-5.7C34.3 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>Continue with Google</button>
+      <p class="hint" style="margin-top:16px"><a href="#/forgot-password">Forgot your password?</a></p>
+      <p class="hint">No account yet? <a href="#/register">Sign up free</a></p>
+    </div>
+    <div class="auth-side">
+      <h2>Your links, working harder.</h2>
+      <p>Every click counted, every link under your control — domains, aliases, QR codes and cards included.</p>
+      <div class="mini-stats">
+        <div><div class="num" data-auth-stat="links">0</div><div class="lbl">Links created</div></div>
+        <div><div class="num" data-auth-stat="clicks">0</div><div class="lbl">Clicks tracked</div></div>
+        <div><div class="num" data-auth-stat="domains">0</div><div class="lbl">Domains</div></div>
+      </div>
+      <ul><li>Custom aliases on every link</li><li>Real-time click analytics</li><li>Bulk shorten &amp; CSV export</li><li>Personal API key</li></ul>
+    </div>
+  </div></div>
+</section>
+
+<!-- ================= VIEW: REGISTER ================= -->
+<section data-view="register" class="hidden">
+  <div class="wrap"><div class="auth-grid">
+    <div class="auth-form">
+      <h1>Create your free account</h1><p class="sub">Under a minute. No credit card, ever.</p>
+      <form id="registerForm" novalidate>
+        <div class="field"><label for="rgName">Full name</label><input type="text" id="rgName" autocomplete="name" required></div>
+        <div class="field"><label for="rgEmail">Email</label><input type="email" id="rgEmail" autocomplete="email" required></div>
+        <div class="grid2">
+          <div class="field"><label for="rgPass">Password</label><input type="password" id="rgPass" autocomplete="new-password" required><p class="hint">8+ characters, letters and numbers.</p></div>
+          <div class="field"><label for="rgPass2">Confirm password</label><input type="password" id="rgPass2" autocomplete="new-password" required></div>
+        </div>
+        <div class="field inline-check"><input type="checkbox" id="rgAgree" style="width:17px;height:17px"><label for="rgAgree" style="margin:0;font-weight:600">I agree to the <a href="#/terms">Terms</a> and <a href="#/privacy">Privacy Policy</a></label></div>
+        <div class="err-text" id="rgErr"></div>
+        <button class="btn" type="submit" id="rgBtn" style="width:100%">Create account</button>
+      </form>
+      <div class="auth-or">or</div>
+      <button class="btn-google" type="button" id="rgGoogle"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3l5.7-5.7C34.3 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3l5.7-5.7C34.3 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>Sign up with Google</button>
+      <p class="hint" style="margin-top:16px">Already have an account? <a href="#/login">Log in</a></p>
+    </div>
+    <div class="auth-side">
+      <h2>Start shortening in seconds.</h2>
+      <p>Pick your domains, claim your aliases and watch every click from one clean dashboard.</p>
+      <div class="mini-stats">
+        <div><div class="num" data-auth-stat="links">0</div><div class="lbl">Links created</div></div>
+        <div><div class="num" data-auth-stat="clicks">0</div><div class="lbl">Clicks tracked</div></div>
+        <div><div class="num" data-auth-stat="domains">0</div><div class="lbl">Domains</div></div>
+      </div>
+      <ul><li>10,000 links on the free plan</li><li>All domains included</li><li>Image cards &amp; media endings</li><li>API access from day one</li></ul>
+    </div>
+  </div></div>
+</section>
+
+<!-- ================= VIEW: FORGOT PASSWORD ================= -->
+<section data-view="forgot-password" class="hidden">
+  <div class="wrap" style="max-width:520px;padding:52px 20px 70px">
+    <form id="forgotForm" class="panel" novalidate>
+      <h1 style="color:var(--navy);font-size:24px;margin-bottom:6px">Reset your password</h1>
+      <p class="sub" style="color:var(--muted);margin-bottom:18px">Enter your account email and we will send a reset link.</p>
+      <div class="field"><label for="fpEmail">Email</label><input type="email" id="fpEmail" required></div>
+      <div class="err-text" id="fpErr"></div>
+      <button class="btn" type="submit" style="width:100%">Send reset link</button>
+      <p class="hint" style="margin-top:14px"><a href="#/login">← Back to log in</a></p>
+    </form>
+  </div>
+</section>
+
+<!-- ================= VIEW: DASHBOARD ================= -->
+<section data-view="dashboard" class="hidden">
+  <div class="dash">
+    <aside class="dash-side" id="dashSide">
+      <button data-dtab="overview" class="active">📊 Overview</button>
+      <button data-dtab="create">➕ Create Link</button>
+      <button data-dtab="links">🔗 My Links</button>
+      <button data-dtab="bulk">📋 Bulk Shorten</button>
+      <button data-dtab="analytics">📈 Link Analytics</button>
+      <button data-dtab="api">🛠️ API</button>
+      <button data-dtab="settings">⚙️ Settings</button>
+      <button id="dashLogout">🚪 Logout</button>
+    </aside>
+    <div class="dash-main" id="dashMain"></div>
+  </div>
+</section>
+
+<!-- ================= VIEW: ADMIN ================= -->
+<section data-view="admin" class="hidden">
+  <div class="wrap" style="padding:36px 20px 70px">
+    <h1 style="color:var(--navy);font-size:28px;margin-bottom:4px">Admin panel</h1>
+    <p style="color:var(--muted);margin-bottom:20px">Site-wide links, users, messages, reports and settings.</p>
+    <div id="adminBody"></div>
+  </div>
+</section>
+
+<!-- ================= VIEW: REDIRECT / LANDING / BOT ================= -->
+<section data-view="redirect" class="hidden"><div id="redirectBody"></div></section>
+
+<!-- ================= VIEW: 404 ================= -->
+<section data-view="notfound" class="hidden">
+  <div class="notfound">
+    <div class="big">404</div>
+    <h1 style="color:var(--navy)">This short link does not exist</h1>
+    <p style="color:var(--muted);margin:10px 0 20px">It may have been deleted, or the code was typed wrong.</p>
+    <a class="btn" href="#/">Create your own short link</a>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="#/" style="margin-bottom:10px"><span class="logo-mark"><svg viewBox="0 0 64 64" fill="none"><path d="M26 38a8 8 0 0 0 11 0l7-7a8 8 0 1 0-11-11l-3 3" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M38 26a8 8 0 0 0-11 0l-7 7a8 8 0 1 0 11 11l3-3" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg></span><span><b>Jet</b><span>Link</span></span></a>
+        <p>Free URL shortener with multiple domains, QR codes, image cards and privacy-first click analytics.</p>
+      </div>
+      <div><h4>Product</h4><a href="#features" data-scroll="features">Features</a><a href="#/pricing">Pricing</a><a href="#/dashboard">Dashboard</a><a href="#/help">Help center</a><a href="#/faq">FAQ</a></div>
+      <div><h4>Company</h4><a href="#/about">About</a><a href="#/blog">Blog</a><a href="#/contact">Contact</a><a href="#/report-abuse">Report abuse</a></div>
+      <div><h4>Legal</h4><a href="#/terms">Terms of Service</a><a href="#/privacy">Privacy Policy</a><a href="#/cookie-policy">Cookie Policy</a><a href="#/acceptable-use">Acceptable Use</a><a href="#/dmca">DMCA</a><a href="#/refund-policy">Refund Policy</a><a href="#/disclaimer">Disclaimer</a></div>
+      <div><h4>Account</h4><a href="#/login">Log in</a><a href="#/register">Sign up</a><a href="#/forgot-password">Forgot password</a><a href="#/dashboard">My links</a></div>
+    </div>
+    <div class="copyright">© <span id="yearNow"></span> JetLink. All rights reserved. Made for people who share.<br>Developed By Sabbir</div>
+  </div>
+</footer>
+
+<!-- ================= RESULT MODAL ================= -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <h3>🎉 Your short link is ready</h3>
+    <p class="sub">Copy it, share it, or scan the QR code.</p>
+    <div class="field"><label>Working short URL (opens on this site)</label>
+      <div class="rowflex"><input type="text" id="rmUrl" class="grow" readonly><button class="btn" id="rmCopy" type="button">Copy</button></div>
+    </div>
+    <p class="hint" id="rmPretty"></p>
+    <p class="hint" id="rmRedirect"></p>
+    <div class="qr-box">
+      <img id="rmQr" alt="QR code for your short link" width="200" height="200">
+      <div style="margin-top:10px">
+        <button class="mini-btn" id="rmQrPng" type="button">Download QR (PNG)</button>
+        <button class="mini-btn" id="rmQrSvg" type="button">Download QR (SVG)</button>
+      </div>
+    </div>
+    <div class="field inline-check"><input type="checkbox" id="rmBotToggle" style="width:17px;height:17px"><label for="rmBotToggle" style="margin:0">Show bot / crawler preview (what social apps see)</label></div>
+    <div id="rmBotPreview" class="hidden"></div>
+    <div class="rowflex" style="margin-top:16px">
+      <a class="btn orange grow" id="rmOpen" href="#" target="_blank" rel="noopener">Open link ↗</a>
+      <button class="btn ghost grow" id="rmDone" type="button">Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<!-- Firebase compat SDKs (used only when a config is pasted in below) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+/* =====================================================================
+   JetLink — single-file app
+   Data layer supports two backends behind the same functions:
+     1) LOCAL DEMO MODE  (localStorage)  — when firebaseConfig is empty
+     2) FIREBASE MODE    (Auth + Firestore) — when a config is pasted in
+   ===================================================================== */
+
+/* >>>>>> PASTE YOUR FIREBASE CONFIG HERE <<<<<<
+   Firebase console → Project settings → "Your apps" → Web app.
+   Leave apiKey empty to run in local demo mode. */
+const firebaseConfig = {
+  apiKey: "AIzaSyD6jdpMY7RVUIh48DugKYKYMvOqesFWUxo",
+  authDomain: "jetlink-6c450.firebaseapp.com",
+  projectId: "jetlink-6c450",
+  storageBucket: "jetlink-6c450.firebasestorage.app",
+  messagingSenderId: "1097642853583",
+  appId: "1:1097642853583:web:f6a0e61be350aadc7323ba"
+};
+
+/* Domains offered in the shortener. These are EXAMPLE domains for the UI —
+   for real use, add domains you actually own (Firebase Hosting → custom
+   domains, or your Node host) and edit this list / the admin settings. */
+const DOMAIN_POOL = [
+  'jetlink.to', 'jlnk.me', 'go.jetlink.app', 'link.jetlink.app', 'cdn.jetlink.to',
+  'jetl.ink', 'jlink.io', 'goj.link', 'lnk.jetlink.app', 'v.jetlink.to',
+  'cdn.jlnk.me', 'media.jetl.ink', 'play.jlink.io', 's.goj.link', 'x.jetlink.to'
+];
+const ENDINGS = ['', '.mp4', '.stream', '.video', '.link', '.vip', '.xyz'];
+const DEFAULT_SETTINGS = { cpmRate: 4.00, domains: DOMAIN_POOL.slice() };
+
+/* ---------------- utils ---------------- */
+const $  = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function toast(msg, isErr) {
+  const t = document.createElement('div');
+  t.className = 'toast' + (isErr ? ' err' : '');
+  t.textContent = msg;
+  $('#toasts').appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(() => t.remove(), 320); }, 2600);
+}
+function fmt(n) {
+  n = Number(n) || 0;
+  if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'm';
+  if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'k';
+  return String(n);
+}
+function genCode(len) {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let c = '';
+  for (let i = 0; i < (len || 6); i++) c += chars[Math.floor(Math.random() * chars.length)];
+  return c;
+}
+function genApiKey() {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let k = 'jl_';
+  for (let i = 0; i < 24; i++) k += chars[Math.floor(Math.random() * chars.length)];
+  return k;
+}
+function normalizeUrl(u) {
+  u = String(u || '').trim();
+  if (!u) return '';
+  if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+  return u;
+}
+function isValidUrl(u) {
+  try { const x = new URL(u); return x.protocol === 'http:' || x.protocol === 'https:'; }
+  catch (e) { return false; }
+}
+function deviceFromUA(ua) {
+  ua = ua || navigator.userAgent || '';
+  if (/iPad|Tablet|PlayBook|Silk/i.test(ua)) return 'Tablet';
+  if (/Mobi|Android|iPhone|iPod|Windows Phone/i.test(ua)) return 'Mobile';
+  return 'Desktop';
+}
+function timeAgo(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + 'm ago';
+  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+  return Math.floor(s / 86400) + 'd ago';
+}
+function dateStr(ts) { return new Date(ts).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); }
+function countBy(arr, key) {
+  const m = {};
+  arr.forEach(o => { const k = o[key] || 'Unknown'; m[k] = (m[k] || 0) + 1; });
+  return Object.entries(m).sort((a, b) => b[1] - a[1]);
+}
+function downloadFile(name, content, type) {
+  const blob = content instanceof Blob ? content : new Blob([content], { type: type || 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+function clicksToCSV(clicks) {
+  const rows = [['code', 'time', 'country', 'device', 'referrer']];
+  clicks.forEach(c => rows.push([c.code, new Date(c.ts).toISOString(), c.country || '', c.device || '', String(c.referrer || '').replace(/,/g, ' ')]));
+  return rows.map(r => r.join(',')).join('\n');
+}
+/* Demo-mode "hash" — a tiny salted scramble, NOT real security. Demo auth is
+   a convenience for trying the UI; use Firebase mode for real accounts. */
+function demoHash(pw, salt) {
+  let h = 5381; const s = String(salt) + '::' + String(pw);
+  for (let i = 0; i < s.length; i++) { h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; h = ((h << 5) + h) >>> 0; }
+  return 'dh_' + h.toString(36) + s.length;
+}
+
+/* ---------------- app state ---------------- */
+const MODE = (firebaseConfig.apiKey && window.firebase) ? 'firebase' : 'local';
+let FB = { auth: null, db: null };
+let currentUser = null;              // {uid, name, email, role, apiKey}
+let SETTINGS = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem('jl_' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('jl_' + k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* ---------------- data layer: links ---------------- */
+async function dbSaveLink(link) {
+  if (MODE === 'firebase') { await FB.db.collection('links').doc(link.code).set(link); return link; }
+  const links = LS.get('links', []);
+  const i = links.findIndex(l => l.code === link.code);
+  if (i >= 0) links[i] = link; else links.push(link);
+  LS.set('links', links);
+  return link;
+}
+async function dbGetLink(code) {
+  if (!code) return null;
+  if (MODE === 'firebase') {
+    const d = await FB.db.collection('links').doc(code).get();
+    return d.exists ? d.data() : null;
+  }
+  return LS.get('links', []).find(l => l.code === code) || null;
+}
+async function dbAllLinks() {
+  if (MODE === 'firebase') {
+    const s = await FB.db.collection('links').orderBy('createdAt', 'desc').limit(1000).get();
+    return s.docs.map(d => d.data());
+  }
+  return LS.get('links', []).slice().sort((a, b) => b.createdAt - a.createdAt);
+}
+async function dbMyLinks(uid) {
+  if (MODE === 'firebase') {
+    const s = await FB.db.collection('links').where('owner', '==', uid).limit(1000).get();
+    return s.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt);
+  }
+  return LS.get('links', []).filter(l => l.owner === uid).sort((a, b) => b.createdAt - a.createdAt);
+}
+async function dbUpdateLink(code, patch) {
+  if (MODE === 'firebase') { await FB.db.collection('links').doc(code).update(patch); return; }
+  const links = LS.get('links', []);
+  const l = links.find(x => x.code === code);
+  if (l) { Object.assign(l, patch); LS.set('links', links); }
+}
+async function dbDeleteLink(code) {
+  if (MODE === 'firebase') {
+    await FB.db.collection('links').doc(code).delete();
+    const s = await FB.db.collection('clicks').where('code', '==', code).get();
+    const batch = FB.db.batch(); s.docs.forEach(d => batch.delete(d.ref)); await batch.commit();
+    return;
+  }
+  LS.set('links', LS.get('links', []).filter(l => l.code !== code));
+  LS.set('clicks', LS.get('clicks', []).filter(c => c.code !== code));
+}
+async function dbCodeTaken(code) { return !!(await dbGetLink(code)); }
+
+/* ---------------- data layer: clicks ---------------- */
+async function dbRecordClick(click) {
+  if (MODE === 'firebase') { await FB.db.collection('clicks').add(click); }
+  else { const c = LS.get('clicks', []); c.push(click); LS.set('clicks', c); }
+  // bump the counter on the link doc
+  try {
+    if (MODE === 'firebase') {
+      await FB.db.collection('links').doc(click.code)
+        .update({ clicks: firebase.firestore.FieldValue.increment(1) });
+    } else {
+      const links = LS.get('links', []);
+      const l = links.find(x => x.code === click.code);
+      if (l) { l.clicks = (l.clicks || 0) + 1; LS.set('links', links); }
+    }
+  } catch (e) { /* counter is best-effort */ }
+}
+async function dbAllClicks() {
+  if (MODE === 'firebase') {
+    const s = await FB.db.collection('clicks').orderBy('ts', 'desc').limit(2000).get();
+    return s.docs.map(d => d.data());
+  }
+  return LS.get('clicks', []).slice().sort((a, b) => b.ts - a.ts);
+}
+async function dbClicksFor(code) {
+  if (MODE === 'firebase') {
+    const s = await FB.db.collection('clicks').where('code', '==', code).limit(2000).get();
+    return s.docs.map(d => d.data()).sort((a, b) => b.ts - a.ts);
+  }
+  return LS.get('clicks', []).filter(c => c.code === code).sort((a, b) => b.ts - a.ts);
+}
+async function dbClicksByOwner(uid) {
+  if (MODE === 'firebase') {
+    const s = await FB.db.collection('clicks').where('owner', '==', uid).limit(2000).get();
+    return s.docs.map(d => d.data()).sort((a, b) => b.ts - a.ts);
+  }
+  return LS.get('clicks', []).filter(c => c.owner === uid).sort((a, b) => b.ts - a.ts);
+}
+
+/* ---------------- data layer: misc collections ---------------- */
+async function dbAddDoc(col, data) {
+  if (MODE === 'firebase') { await FB.db.collection(col).add(data); return; }
+  const arr = LS.get(col, []); arr.push(data); LS.set(col, arr);
+}
+async function dbListCol(col) {
+  if (MODE === 'firebase') {
+    const s = await FB.db.collection(col).limit(500).get();
+    return s.docs.map(d => d.data());
+  }
+  return LS.get(col, []);
+}
+async function dbGetSettings() {
+  if (MODE === 'firebase') {
+    try {
+      const d = await FB.db.collection('settings').doc('site').get();
+      if (d.exists) return Object.assign({}, DEFAULT_SETTINGS, d.data());
+    } catch (e) {}
+    return JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+  }
+  return Object.assign({}, DEFAULT_SETTINGS, LS.get('settings', {}));
+}
+async function dbSaveSettings(s) {
+  SETTINGS = s;
+  if (MODE === 'firebase') { await FB.db.collection('settings').doc('site').set(s); }
+  else LS.set('settings', s);
+}
+async function dbListUsers() {
+  if (MODE === 'firebase') {
+    const s = await FB.db.collection('users').limit(500).get();
+    return s.docs.map(d => Object.assign({ uid: d.id }, d.data()));
+  }
+  return LS.get('users', []).map(u => ({ uid: u.uid, name: u.name, email: u.email, role: u.role || 'user', createdAt: u.createdAt }));
+}
+async function dbSaveUserProfile(uid, patch) {
+  if (MODE === 'firebase') { await FB.db.collection('users').doc(uid).set(patch, { merge: true }); return; }
+  const users = LS.get('users', []);
+  const u = users.find(x => x.uid === uid);
+  if (u) { Object.assign(u, patch); LS.set('users', users); }
+}
+
+/* ---------------- auth ---------------- */
+async function authRegister(name, email, password) {
+  email = email.toLowerCase().trim();
+  if (MODE === 'firebase') {
+    const cred = await FB.auth.createUserWithEmailAndPassword(email, password);
+    const profile = { name, email, role: 'user', apiKey: genApiKey(), createdAt: Date.now() };
+    await FB.db.collection('users').doc(cred.user.uid).set(profile);
+    return Object.assign({ uid: cred.user.uid }, profile);
+  }
+  const users = LS.get('users', []);
+  if (users.some(u => u.email === email)) throw new Error('An account with this email already exists.');
+  const salt = genCode(8);
+  const user = {
+    uid: 'u_' + genCode(10), name, email, role: 'user',
+    apiKey: genApiKey(), createdAt: Date.now(), salt, pw: demoHash(password, salt)
+  };
+  users.push(user); LS.set('users', users);
+  LS.set('session', user.uid);
+  return publicUser(user);
+}
+async function authLogin(email, password, keep) {
+  email = email.toLowerCase().trim();
+  if (MODE === 'firebase') {
+    const cred = await FB.auth.signInWithEmailAndPassword(email, password);
+    await FB.auth.setPersistence(keep
+      ? firebase.auth.Auth.Persistence.LOCAL
+      : firebase.auth.Auth.Persistence.SESSION).catch(() => {});
+    const d = await FB.db.collection('users').doc(cred.user.uid).get();
+    const profile = d.exists ? d.data() : { name: email.split('@')[0], email, role: 'user', apiKey: genApiKey() };
+    return Object.assign({ uid: cred.user.uid }, profile);
+  }
+  const users = LS.get('users', []);
+  const u = users.find(x => x.email === email);
+  if (!u || u.pw !== demoHash(password, u.salt)) throw new Error('Wrong email or password.');
+  LS.set('session', u.uid);
+  return publicUser(u);
+}
+async function authGoogle() {
+  if (MODE !== 'firebase') throw new Error('Google sign-in needs Firebase mode. In demo mode, please use email and password.');
+  const provider = new firebase.auth.GoogleAuthProvider();
+  const cred = await FB.auth.signInWithPopup(provider);
+  const fu = cred.user;
+  const ref = FB.db.collection('users').doc(fu.uid);
+  const d = await ref.get();
+  if (d.exists) return Object.assign({ uid: fu.uid }, d.data());
+  const profile = {
+    name: fu.displayName || (fu.email || '').split('@')[0],
+    email: (fu.email || '').toLowerCase(),
+    role: 'user', apiKey: genApiKey(), createdAt: Date.now()
+  };
+  await ref.set(profile);
+  return Object.assign({ uid: fu.uid }, profile);
+}
+function publicUser(u) {
+  return { uid: u.uid, name: u.name, email: u.email, role: u.role || 'user', apiKey: u.apiKey, createdAt: u.createdAt };
+}
+async function authLogout() {
+  if (MODE === 'firebase') { await FB.auth.signOut(); }
+  else LS.set('session', null);
+  currentUser = null;
+  updateHeader();
+}
+async function authRestore() {
+  if (MODE === 'firebase') {
+    return new Promise(resolve => {
+      const un = FB.auth.onAuthStateChanged(async fu => {
+        un();
+        if (!fu) return resolve(null);
+        try {
+          const d = await FB.db.collection('users').doc(fu.uid).get();
+          const profile = d.exists ? d.data() : { name: fu.email.split('@')[0], email: fu.email, role: 'user', apiKey: genApiKey() };
+          resolve(Object.assign({ uid: fu.uid }, profile));
+        } catch (e) { resolve(null); }
+      });
+    });
+  }
+  const uid = LS.get('session', null);
+  if (!uid) return null;
+  const u = LS.get('users', []).find(x => x.uid === uid);
+  return u ? publicUser(u) : null;
+}
+async function authReset(email) {
+  if (MODE === 'firebase') { await FB.auth.sendPasswordResetEmail(email); return 'firebase'; }
+  return 'demo';
+}
+</script>
+
+<script>
+/* =====================================================================
+   Content data (all copy written for JetLink) + shortener component
+   ===================================================================== */
+const PLATFORMS = ['Facebook', 'YouTube', 'WhatsApp', 'Telegram', 'Instagram', 'TikTok', 'X / Twitter', 'LinkedIn', 'Pinterest', 'Reddit', 'Email', 'Print & QR'];
+
+const FAQ_HOME = [
+  { q: 'Is JetLink really free?', a: 'Yes. JetLink is built and run by Dev X Sabbir, and shortening links, QR codes, image cards, bulk shortening and the API are all on the free plan. You do not need a credit card to sign up, and the free plan is not a timed trial.' },
+  { q: 'Do short links expire?', a: 'No. Links you create keep working as long as your account (or this site) exists. There is no built-in expiry date on free-plan links.' },
+  { q: 'Can I choose my own ending for a link?', a: 'Yes. Free accounts can set a custom alias, and everyone can add a media ending such as .mp4, .stream or .video so a link looks right for the content behind it.' },
+  { q: 'How does click tracking work?', a: 'Every time someone opens your short link we record the time, country, device type and where the click came from. You see it all in your dashboard — totals, charts and a per-link breakdown you can export as CSV.' },
+  { q: 'Can I use my own domain?', a: 'Yes. If you own a domain you can connect it (for example in Firebase Hosting) and add it to the domain pool, so your short links carry your brand instead of ours.' }
+];
+
+const FAQ_GROUPS = [
+  { title: 'Getting started', items: [
+    { q: 'How do I shorten a link?', a: 'Paste your long URL into the box on the home page, optionally pick a domain and an ending, and press Shorten. Your short link and its QR code appear instantly — no account needed for a basic link.' },
+    { q: 'Do I need an account?', a: 'Not for a quick link. An account unlocks custom aliases, a dashboard to manage and edit links, bulk shortening, per-link analytics and an API key.' },
+    { q: 'What is a custom alias?', a: 'Instead of a random code like k3x9a, you choose the ending yourself — for example /summer-sale. Aliases must be 3–30 characters (letters, numbers, hyphens) and unique.' }
+  ]},
+  { title: 'Cards, media & domains', items: [
+    { q: 'What is an image card?', a: 'An image card is a short link that first shows a picture with your title (and an optional play button). When a visitor taps the picture they continue to your destination. It is the format social feeds love: a big tappable image that leads to a video or page.' },
+    { q: 'What is a media link ending?', a: 'Endings like .mp4, .stream or .video are added after your code so the link looks like a media file when shared. The ending is cosmetic — the link still redirects to your destination.' },
+    { q: 'Which domains can I use?', a: 'Any domain in the pool on the home page. The pool is maintained by the site admin; if you run your own copy of JetLink you can edit the pool in the admin panel and connect domains you own.' }
+  ]},
+  { title: 'Analytics & earnings', items: [
+    { q: 'What analytics do I get?', a: 'Totals and charts for clicks over the last 14 days, top countries, devices and referrers, plus a recent-clicks feed — per link and across your whole account. Reports export to CSV.' },
+    { q: 'How do earnings work (CPM)?', a: 'Some shortener sites pay publishers a CPM rate — an amount per 1,000 clicks. JetLink\'s dashboard shows an ESTIMATE using the site\'s CPM rate (clicks ÷ 1,000 × rate) so you can model potential revenue. It is an estimate for planning only, not a payout balance; real payouts require an advertising/revenue backend, which this build does not include.' },
+    { q: 'Is visitor data private?', a: 'Clicks are aggregated — country, device type and referrer domain. We do not build profiles of individual visitors or sell click data.' }
+  ]},
+  { title: 'Account & API', items: [
+    { q: 'How do I get an API key?', a: 'Log in, open Dashboard → API, and generate a key. Use it with the Node backend (see the API tab for curl examples) to create links from your own apps and bots.' },
+    { q: 'I forgot my password. What now?', a: 'Use the "Forgot password" link on the login page. With Firebase enabled you get a real reset email; in demo mode password resets are not available because data never leaves your browser.' },
+    { q: 'How do I report a bad link?', a: 'Use the Report abuse page in the footer. Give us the short link code and the reason — phishing and malware links are removed after review.' }
+  ]}
+];
+
+const HELP_TOPICS = [
+  { q: 'How to shorten a link', a: 'Go to the home page, paste your long URL into the Short Link tab, choose a domain and (optionally) an ending, then press Shorten. Copy the result or download its QR code.' },
+  { q: 'How to set a custom alias', a: 'Sign up for a free account, then in the shortener open "Custom alias" and type your ending. We check availability as you type. Aliases are 3–30 characters: letters, numbers and hyphens.' },
+  { q: 'How to make an image card', a: 'Open the Image Card tab: paste the destination URL, an image URL (JPG/PNG/WebP), a title, and optionally a description, a play button and a video duration. The preview updates live. Shortening creates a link that shows the card first, then sends clickers to your destination.' },
+  { q: 'How to make a media link', a: 'Open the Media Link tab, paste your URL, tap an ending (.mp4, .stream, .video, .link, .vip, .xyz) and shorten. The ending is cosmetic and helps the link look like media when shared.' },
+  { q: 'How to read your analytics', a: 'Dashboard → Overview shows totals and a 14-day chart. Dashboard → Link Analytics breaks one link down by country, device and referrer, with a CSV export.' },
+  { q: 'How to use the API', a: 'Generate a key in Dashboard → API. With the optional Node server running, POST to /api/v1/links with the header x-api-key. The API tab includes copy-paste curl examples and a built-in tester.' },
+  { q: 'How domains work', a: 'The shortener can display your link on any domain from the pool. The link that actually opens is served by this site (or your connected custom domain); the pool names are display/branding choices until you connect domains you own.' },
+  { q: 'Do links expire?', a: 'No — links have no expiry. You can delete a link any time from My Links, which immediately stops it redirecting.' },
+  { q: 'How to report abuse', a: 'Footer → Report abuse. Send the short link code and what is wrong with it. An admin reviews reports in the admin panel.' }
+];
+
+const ARTICLES = [
+  { slug: 'best-free-url-shorteners', cat: 'Comparisons', icon: '🏆', color: '#2563eb', title: 'Best free URL shorteners in 2026: an honest comparison', mins: 6, excerpt: 'What actually matters when you pick a shortener — limits, analytics, domains and the fine print behind "free".',
+    paras: ['Every shortener promises the same three things: short links, fast redirects and statistics. The differences hide in the limits. Some services cap you at a handful of links a month, others paywall custom aliases, and a few shut down entirely, taking your links with them.',
+    'When you compare, look at five things: how many links you can create, whether custom aliases are free, whether you can use more than one domain, how detailed the click analytics are, and whether there is an API. A QR code generator and bulk shortening are worth having if you work with print or long lists.',
+    'Free tiers also differ in what happens to your data. A privacy-first shortener counts clicks in aggregate — country, device, referrer — instead of profiling every visitor. That is better for your audience and usually still gives you everything you need to judge a campaign.',
+    'Our advice: start free, but choose a tool you would not mind staying with. Moving hundreds of printed or posted short links later is painful, so pick the service whose free plan already covers aliases, analytics and an API — the features you will want in six months.'] },
+  { slug: 'short-link-generator-guide', cat: 'Guides', icon: '✂️', color: '#f97316', title: 'Short link generator: how it works and how to use one well', mins: 5, excerpt: 'From long URL to tidy short link in seconds — plus the small habits that make short links perform better.',
+    paras: ['A short link generator takes a long URL and stores it against a short code. When someone visits the short address, the service looks the code up and redirects the visitor to the original page. The whole detour takes a fraction of a second.',
+    'Using one well starts with the alias. A short, readable alias like /summer-sale tells people what they are tapping and consistently earns more clicks than a random string — especially in print, video descriptions and spoken calls to action.',
+    'Next, match the domain and ending to the content. A video link with a .mp4 ending looks native in a feed; a neutral domain works better for business documents. Small signals of relevance add up.',
+    'Finally, treat the generator as a measuring tool, not just a shrinker. Create a separate link per channel — one for your bio, one for the video description, one for the newsletter — and the click stats will show you exactly where your audience actually is.'] },
+  { slug: 'url-shortener-with-analytics', cat: 'Analytics', icon: '📊', color: '#7c3aed', title: 'URL shortener with analytics: read your clicks like a pro', mins: 6, excerpt: 'Totals are vanity. Countries, devices, referrers and timing are where the useful decisions live.',
+    paras: ['A click count on its own tells you almost nothing. The value of link analytics is in the breakdowns: where in the world clicks come from, which site or app sent them, and whether people tapped on a phone or a desktop.',
+    'Country data changes content decisions. If a third of your clicks come from a country you did not expect, that is an audience asking for subtitles, a local posting time, or a translated description. Device data is just as practical: a mostly-mobile audience means your landing page must be fast and thumb-friendly.',
+    'Referrers are the honest scoreboard of your distribution. They show which channel — a specific social app, a partner site, a QR code on a flyer — actually delivers, so you can stop guessing and double down on what works.',
+    'Make it a weekly habit: check the last 14 days, note the top three referrers and countries, and export a CSV before a sponsor or client meeting. Five minutes of real numbers beats an hour of opinions.'] },
+  { slug: 'url-shortener-api-developers', cat: 'Developers', icon: '🛠️', color: '#0ea5e9', title: 'URL shortener API: shorten links from your own code', mins: 5, excerpt: 'Bots, CI pipelines and apps all need links. A tiny REST API makes shortening a one-liner.',
+    paras: ['If you run a bot, a CMS or any automation, clicking through a website to shorten links does not scale. An API turns shortening into a single HTTP call: send the long URL and your API key, get a short link back as JSON.',
+    'A good shortener API keeps the surface small: create a link, list your links, delete a link. Authentication is a single header, and errors come back as readable JSON with proper status codes — 400 for a bad URL, 409 when an alias is taken, 401 for a bad key.',
+    'JetLink ships with an optional Node/Express backend that implements exactly this. Point your Telegram bot, your upload pipeline or your CI job at it and every file, release or post can carry its own trackable short link automatically.',
+    'Two habits keep API links healthy: use a distinct alias prefix per source (for example bot- or ci-) so you can find them later, and check your click stats occasionally — an API that creates links nobody clicks is just noise.'] },
+  { slug: 'tinyurl-alternative', cat: 'Comparisons', icon: '🔀', color: '#16a34a', title: 'Looking for a TinyURL alternative? Read this first', mins: 5, excerpt: 'TinyURL started it all, but modern sharing needs more than a shorter string. Here is what to switch for.',
+    paras: ['TinyURL is a piece of internet history, and for a quick one-off link it still does the job. The problem is everything around the link: limited analytics on the free tier, few domain choices and no real toolkit for cards, QR campaigns or bulk work.',
+    'A modern alternative should give you the features creators actually use weekly: custom aliases without a paywall, QR codes in print-ready formats, image cards for social feeds, media endings for video links and analytics that break down by country and referrer.',
+    'Migration is easier than people fear. Your old links keep working where they are; you simply start creating new links on the new service and update the evergreen spots — bio, channel description, pinned posts — first.',
+    'Judge any alternative by its free plan, because that is the plan you will actually live on. If aliases, analytics and an API are free today, you will not be negotiating with a paywall tomorrow.'] },
+  { slug: 'goo-gl-alternative', cat: 'Comparisons', icon: '🕰️', color: '#dc2626', title: 'goo.gl is gone — here is your alternative', mins: 4, excerpt: 'Google\'s shortener shut down and its links died with it. What to use instead, and how to avoid a repeat.',
+    paras: ['When Google wound down goo.gl, millions of short links stopped working — in old posts, printed material and QR codes that can never be reprinted. It was a sharp lesson: a short link is only as durable as the service behind it.',
+    'The practical takeaway is to separate the two jobs a shortener does. The redirect itself is simple and portable; what you are really choosing is a service you trust to keep resolving your codes for years.',
+    'If you are replacing goo.gl links, prioritise the ones still in circulation: packaging, books, business cards, popular old posts. Create fresh links for those destinations, and where you control the surface, swap them in.',
+    'And build a habit goo.gl never encouraged: keep your own list of which short code points where. With an export of your links, no future shutdown can hold your audience hostage.'] },
+  { slug: 'shorten-google-drive-link', cat: 'Guides', icon: '📁', color: '#eab308', title: 'How to shorten a Google Drive link (and track the clicks)', mins: 4, excerpt: 'Drive links are long, fragile-looking and impossible to read out loud. Fix that in ten seconds.',
+    paras: ['Google Drive share links are built for machines, not people: a long ID string that wraps across lines and looks suspicious in a message. Shortening one makes it shareable in a caption, a comment or a printed handout.',
+    'Before you shorten, set the Drive sharing to "anyone with the link can view" — the shortener can only redirect; it cannot grant access. Then paste the Drive URL into the shortener, add a readable alias like /course-files, and share the short version.',
+    'The bonus is measurement. Drive tells you almost nothing about demand, but your short link counts every click, so you can see whether the file you uploaded is actually being opened, and from which channel.',
+    'One caution: because anyone with the short link reaches the file, treat the alias like a password for sensitive documents. Use an unguessable random code instead of a descriptive alias for anything private.'] },
+  { slug: 'custom-short-link', cat: 'Guides', icon: '🏷️', color: '#2563eb', title: 'Custom short links: small words, more clicks', mins: 5, excerpt: 'People tap links they understand. A custom alias is the cheapest click-through upgrade there is.',
+    paras: ['A custom short link replaces the random code with words you choose: /new-video, /menu, /apply. It takes five extra seconds and quietly changes how the link performs everywhere it appears.',
+    'Readable links earn trust. In a feed full of random strings, a link that says where it goes looks deliberate and safe. In print and on video, a short alias can be read aloud or typed from memory — a random code cannot.',
+    'Keep aliases short, lowercase and obvious. Use hyphens instead of underscores, skip dates unless the link is genuinely seasonal, and reuse a naming pattern (video-, file-, post-) so your link list stays scannable months later.',
+    'Aliases are unique, so popular words go fast on shared domains. If your first choice is taken, add a small qualifier — your channel initials or a number — rather than switching to something cryptic.'] },
+  { slug: 'track-link-clicks', cat: 'Analytics', icon: '👆', color: '#7c3aed', title: 'How to track link clicks (without creepy tracking)', mins: 5, excerpt: 'You can measure a link\'s performance with aggregate data alone. Here is the privacy-first way.',
+    paras: ['Tracking a link does not require tracking a person. When a short link is opened, the redirect itself can note the time, the country, the device type and the referring site — enough to understand performance, with no profiles and no cross-site following.',
+    'Start by giving every channel its own link. The same destination, shortened separately for your bio, your description and your community post, turns one vague total into three clear answers about where clicks come from.',
+    'Then read the patterns, not just the totals. Clicks spiking right after posting means your audience is responsive; a long tail suggests search and shares. Mobile-heavy traffic argues for a lighter landing page; a surprise country argues for a translation.',
+    'Export your data regularly. A CSV of clicks per link is a portable asset — for sponsor reports, client dashboards or your own archive — that no platform change can take away.'] },
+  { slug: 'shorten-links-whatsapp', cat: 'Guides', icon: '💬', color: '#16a34a', title: 'Shorten links for WhatsApp: cleaner chats, clearer results', mins: 4, excerpt: 'Long links wreck a WhatsApp message. Short ones get tapped — and now you can prove which broadcast worked.',
+    paras: ['In WhatsApp, a long link dominates the message, pushes your text out of sight and sometimes breaks across lines. A short link keeps the message about the message — the offer, the video, the announcement — with a tidy tappable ending.',
+    'Create one short link per broadcast or group. Because each link counts its own clicks, you can finally compare: did the morning broadcast outperform the evening one? Did group A care about this offer at all?',
+    'For media, pair the shortener with an image card or a .mp4 ending. The preview looks like content rather than a URL, which matters in a chat where everything competes with family photos.',
+    'Keep the alias friendly and pronounceable — WhatsApp links get forwarded and read aloud. If a customer has to type it from a screenshot, every character counts.'] },
+  { slug: 'shorten-google-form-link', cat: 'Guides', icon: '📝', color: '#f97316', title: 'Shorten a Google Form link for sign-ups that actually happen', mins: 4, excerpt: 'Forms die at the link. A short, named link on your poster or post removes the friction.',
+    paras: ['Google Form links are long enough to defeat a poster. Nobody standing in front of a noticeboard will type forty random characters, which is why so many sign-up drives quietly underperform.',
+    'Shorten the form link with a memorable alias — /signup, /volunteer, your event name — and put that, plus a QR code, on the poster. Now the form is one glance or six keystrokes away.',
+    'The click stats double as a funnel check. Plenty of clicks but few responses means the form itself is the problem — too long, wrong questions. Few clicks means the poster or post is not being seen. Two very different fixes, one simple measurement.',
+    'After the event, keep the link. Point a new form at the same printed materials next time by editing the destination — the posters on the wall stay valid.'] },
+  { slug: 'what-is-media-link-ending', cat: 'Guides', icon: '🎞️', color: '#0ea5e9', title: 'What is a media link ending (.mp4, .stream, .video)?', mins: 4, excerpt: 'Why video links wear a file extension, what it does, and when to use each ending.',
+    paras: ['A media link ending is a suffix added after a short link\'s code — /abc123.mp4 instead of /abc123. It makes the link present itself as a media file when it is shared in feeds, chats and video tools.',
+    'The ending is cosmetic: the link still redirects to the destination you set. What changes is perception and handling. Some apps preview or treat a .mp4-style link as video content, and audiences read it as "this is a video" before they tap.',
+    'Choose the ending that matches the destination: .mp4 for a direct video feel, .stream or .video for watch pages, .link for a neutral page, .vip or .xyz when a campaign uses those styles. Consistency across a campaign looks professional.',
+    'One warning: an ending is not a disguise. Links that pretend to be one thing and lead somewhere unrelated get reported — and removed. Use endings to describe your content honestly and they will quietly lift your click-through rate.'] }
+];
+
+const LEGAL = {
+  'terms': { title: 'Terms of Service', sections: [
+    ['Using the service', 'JetLink provides URL shortening, QR codes, link cards and click analytics. You may use the service for lawful purposes only. You are responsible for the destinations you link to and for having the right to share them.'],
+    ['Accounts', 'You are responsible for activity under your account and for keeping your password safe. Free-plan limits (link counts, daily creation limits) may be enforced to keep the service fast for everyone.'],
+    ['Link removal', 'We may remove links, without notice, that point to phishing, malware, spam or other content that breaks the Acceptable Use policy, or when required by law.'],
+    ['Availability & liability', 'The service is provided "as is". Redirects are best-effort; we are not liable for losses caused by downtime, removed links or third-party destinations.'],
+    ['Changes', 'We may update these terms; continued use after a change means you accept the updated terms.']] },
+  'privacy': { title: 'Privacy Policy', sections: [
+    ['What we collect', 'Account data (name, email) when you register, the links you create, and aggregate click data: time, country, device type and referring site. We do not collect the content of the pages you link to.'],
+    ['How we use it', 'To run the service, show you your analytics, prevent abuse and improve reliability. We never sell personal data or click data.'],
+    ['Cookies', 'We use a small number of cookies/local-storage entries to keep you signed in and remember preferences. See the Cookie Policy for details.'],
+    ['Your choices', 'You can delete your links at any time from the dashboard, which also deletes their click records. Contact us to request full account deletion.']] },
+  'cookie-policy': { title: 'Cookie Policy', sections: [
+    ['What cookies we use', 'Essential storage keeps your session signed in and remembers settings such as your chosen domain. In demo mode everything lives in your browser\'s local storage and never leaves your device.'],
+    ['Analytics', 'Click analytics are collected server-side at redirect time (or in your browser in demo mode) and are aggregated — they are not advertising cookies and do not follow you across other sites.'],
+    ['Managing cookies', 'You can clear site data in your browser at any time; this signs you out and, in demo mode, removes locally stored links.']] },
+  'acceptable-use': { title: 'Acceptable Use Policy', sections: [
+    ['Never allowed', 'Phishing or credential theft, malware or exploit distribution, spam campaigns, links that hide their real destination to deceive, and content that is illegal in the jurisdiction where it is accessed.'],
+    ['Also not allowed', 'Using the service to harass or impersonate, bulk-creating links to evade another service\'s bans, or attempting to disrupt the service or other users.'],
+    ['Enforcement', 'Reported links are reviewed; confirmed abuse leads to link removal and may lead to account suspension. Serious abuse may be reported to the destination\'s host or authorities.']] },
+  'dmca': { title: 'DMCA / Copyright', sections: [
+    ['Our role', 'JetLink is a redirect service: we do not host the content our links point to. Copyright claims usually belong with the site hosting the content, but we act on claims about our links too.'],
+    ['How to file a notice', 'Use the Report abuse page (reason: Copyright / DMCA) or the contact form with: the short link, the work you own, and where the infringing copy lives.'],
+    ['What happens next', 'Valid notices lead to the link being disabled while we review. Counter-notices from the link owner are forwarded to the claimant as the law requires.']] },
+  'refund-policy': { title: 'Refund Policy', sections: [
+    ['Free plan', 'JetLink\'s plan is free, so there are normally no charges and nothing to refund.'],
+    ['If paid features are added', 'Any future paid feature will state its price and refund window before purchase. As a template: monthly plans may be refunded within 7 days of first purchase if the service was materially unavailable.'],
+    ['How to ask', 'Contact us from your account email with the payment reference and we will respond within a few business days.']] },
+  'disclaimer': { title: 'Disclaimer', sections: [
+    ['No warranty', 'JetLink is provided "as is" without warranties of any kind. We work to keep redirects fast and data accurate, but we do not guarantee uninterrupted service or error-free analytics.'],
+    ['Third-party destinations', 'Short links lead to sites we do not control. We are not responsible for their content, safety or privacy practices. Check a destination before trusting it.'],
+    ['Earnings figures', 'Any earnings or CPM figures shown in the dashboard are estimates for planning only. They are not a promise of payment and do not represent real revenue unless a separate monetisation agreement says so.']] }
+};
+
+/* ---------------- short URL helpers ---------------- */
+function appBase() { return location.origin + location.pathname; }
+function workingUrl(code) { return appBase() + '#/r/' + code; }
+function prettyUrl(link) { return 'https://' + (link.domain || 'jetlink.to') + '/' + link.code + (link.ending || ''); }
+function qrUrl(data, size, format) {
+  return 'https://api.qrserver.com/v1/create-qr-code/?size=' + (size || 200) + 'x' + (size || 200) +
+    (format ? '&format=' + format : '') + '&data=' + encodeURIComponent(data);
+}
+
+/* ---------------- create-link core (shared by UI + API tester) ---------------- */
+async function createLinkCore(opts) {
+  const destination = normalizeUrl(opts.destination);
+  if (!isValidUrl(destination)) throw new Error('Please enter a valid destination URL.');
+  let code = (opts.alias || '').trim().toLowerCase();
+  if (code) {
+    if (!/^[a-z0-9-]{3,30}$/.test(code)) throw new Error('Alias must be 3–30 characters: lowercase letters, numbers, hyphens.');
+    if (await dbCodeTaken(code)) throw new Error('That alias is already taken — try another.');
+  } else {
+    do { code = genCode(6); } while (await dbCodeTaken(code));
+  }
+  const link = {
+    code,
+    domain: opts.domain || SETTINGS.domains[0] || 'jetlink.to',
+    ending: opts.ending || '',
+    destination,
+    type: opts.type || 'link',
+    title: opts.title || '',
+    description: opts.description || '',
+    image: opts.image || '',
+    showPlay: !!opts.showPlay,
+    videoTime: opts.videoTime || '',
+    position: opts.position || 'left',
+    owner: opts.owner || 'guest',
+    clicks: 0,
+    createdAt: Date.now()
+  };
+  await dbSaveLink(link);
+  return link;
+}
+
+/* ---------------- result modal ---------------- */
+let modalLink = null;
+function showResultModal(link) {
+  modalLink = link;
+  const w = workingUrl(link.code);
+  $('#rmUrl').value = w;
+  $('#rmPretty').innerHTML = 'On your own connected domain this will be: <b>' + esc(prettyUrl(link)) + '</b>';
+  $('#rmRedirect').textContent = 'Redirects to: ' + link.destination;
+  $('#rmQr').src = qrUrl(w, 200);
+  $('#rmOpen').href = w;
+  $('#rmBotToggle').checked = false;
+  $('#rmBotPreview').classList.add('hidden');
+  $('#rmBotPreview').innerHTML = '';
+  $('#rmCopy').textContent = 'Copy';
+  $('#resultModal').classList.add('open');
+}
+function closeResultModal() { $('#resultModal').classList.remove('open'); }
+
+/* ---------------- shortener component ---------------- */
+function shortenerHTML(p, allowAlias) {
+  const domainOpts = SETTINGS.domains.map(d => '<option value="' + esc(d) + '">' + esc(d) + '</option>').join('');
+  const endingOpts = ENDINGS.map(e => '<option value="' + esc(e) + '">' + (e ? esc(e) : 'No ending') + '</option>').join('');
+  const mediaBtns = ENDINGS.filter(e => e).map(e => '<button type="button" class="ending-btn" data-ending="' + esc(e) + '">' + esc(e) + '</button>').join('');
+  return '' +
+  '<div class="shortener">' +
+    '<div class="tabs">' +
+      '<button type="button" class="tab active" data-stab="link">🔗 Short Link</button>' +
+      '<button type="button" class="tab" data-stab="image">🖼️ Image Card</button>' +
+      '<button type="button" class="tab" data-stab="media">🎬 Media Link</button>' +
+    '</div>' +
+
+    '<div data-pane="link">' +
+      '<div class="field"><label>Your long URL</label><div class="rowflex"><input type="url" class="grow" data-f="dest" placeholder="https://example.com/a/very/long/link…"><button type="button" class="btn" data-act="shorten">Shorten</button></div></div>' +
+      '<div class="grid2">' +
+        '<div class="field"><label>Domain</label><select data-f="domain">' + domainOpts + '</select></div>' +
+        '<div class="field"><label>Link ending</label><select data-f="ending">' + endingOpts + '</select></div>' +
+      '</div>' +
+      aliasHTML(p, allowAlias) +
+      '<div class="preview-line">Preview: <b data-f="preview"></b></div>' +
+      '<div class="err-text" data-f="err"></div>' +
+    '</div>' +
+
+    '<div data-pane="image" class="hidden">' +
+      '<div class="field"><label>Destination URL (where clickers go)</label><input type="url" data-f="idest" placeholder="https://example.com/watch-or-land-here"></div>' +
+      '<div class="field"><label>Image URL (JPG, PNG or WebP)</label><input type="url" data-f="iimage" placeholder="https://example.com/poster.jpg"></div>' +
+      '<div class="field"><label>Card title</label><input type="text" data-f="ititle" placeholder="The title shown on the card" maxlength="90"></div>' +
+      '<div class="field"><label>Description (optional)</label><input type="text" data-f="idesc" placeholder="Shown in social previews" maxlength="160"></div>' +
+      '<div class="grid2">' +
+        '<div class="field inline-check"><label class="switch"><input type="checkbox" data-f="iplay" checked><span class="track"></span></label> Show play button</div>' +
+        '<div class="field"><label>Video time (optional)</label><input type="text" data-f="itime" placeholder="e.g. 12:45" maxlength="8"></div>' +
+      '</div>' +
+      '<div class="field"><label>Title position</label><div class="radio-row">' +
+        '<label class="inline-check"><input type="radio" name="' + p + '-pos" value="left" checked> Left</label>' +
+        '<label class="inline-check"><input type="radio" name="' + p + '-pos" value="right"> Right</label>' +
+      '</div></div>' +
+      '<div class="field"><label>Live preview</label><div data-f="ipreview"></div></div>' +
+      '<div class="grid2">' +
+        '<div class="field"><label>Domain</label><select data-f="idomain">' + domainOpts + '</select></div>' +
+        '<div class="field"><label>Link ending</label><select data-f="iending">' + endingOpts + '</select></div>' +
+      '</div>' +
+      aliasHTML(p, allowAlias) +
+      '<button type="button" class="btn" data-act="shorten-image" style="width:100%">Create image card link</button>' +
+      '<div class="err-text" data-f="ierr"></div>' +
+    '</div>' +
+
+    '<div data-pane="media" class="hidden">' +
+      '<div class="field"><label>Your long URL</label><input type="url" data-f="mdest" placeholder="https://example.com/video-page"></div>' +
+      '<div class="field"><label>Media ending</label><div class="ending-btns" data-f="mendings">' + mediaBtns + '</div></div>' +
+      '<div class="field"><label>Domain</label><select data-f="mdomain">' + domainOpts + '</select></div>' +
+      aliasHTML(p, allowAlias) +
+      '<div class="preview-line">Preview: <b data-f="mpreview"></b></div>' +
+      '<div class="err-text" data-f="merr"></div>' +
+      '<button type="button" class="btn" data-act="shorten-media" style="width:100%">Create media link</button>' +
+    '</div>' +
+  '</div>';
+}
+function aliasHTML(p, allowAlias) {
+  if (!allowAlias) {
+    return '<details class="alias-box"><summary>Custom alias</summary><p class="hint" style="margin-top:8px">🔒 <a href="#/register">Sign up free</a> to choose your own alias — guests get a random code.</p></details>';
+  }
+  return '<details class="alias-box"><summary>Custom alias (optional)</summary>' +
+    '<div class="field" style="margin-top:10px"><input type="text" data-f="alias" placeholder="e.g. summer-sale" maxlength="30">' +
+    '<p class="hint" data-f="aliasmsg">3–30 characters: lowercase letters, numbers, hyphens.</p></div></details>';
+}
+
+function attachShortener(root, opts) {
+  opts = opts || {};
+  const allowAlias = !!opts.allowAlias;
+  const q = s => root.querySelector('[data-f="' + s + '"]');
+  let mediaEnding = '.mp4';
+
+  function curAlias() {
+    const pane = root.querySelector('[data-pane]:not(.hidden)');
+    const a = (pane && pane.querySelector('[data-f="alias"]')) || q('alias');
+    return a ? a.value : '';
+  }
+  function owner() { return currentUser ? currentUser.uid : 'guest'; }
+  function busy(btn, on) {
+    if (!btn) return;
+    if (on) { btn.dataset.old = btn.innerHTML; btn.innerHTML = '<span class="spinner"></span> Working…'; btn.disabled = true; }
+    else { btn.innerHTML = btn.dataset.old || btn.innerHTML; btn.disabled = false; }
+  }
+  function updatePreview() {
+    const d = (q('domain') || {}).value || SETTINGS.domains[0];
+    const e = (q('ending') || {}).value || '';
+    const a = curAlias().trim().toLowerCase();
+    const pv = q('preview'); if (pv) pv.textContent = 'https://' + d + '/' + (a || '••••••') + e;
+    const md = (q('mdomain') || {}).value || SETTINGS.domains[0];
+    const mpv = q('mpreview'); if (mpv) mpv.textContent = 'https://' + md + '/' + (a || '••••••') + mediaEnding;
+  }
+  function updateImagePreview() {
+    const box = q('ipreview'); if (!box) return;
+    const img = (q('iimage') || {}).value || '';
+    const title = (q('ititle') || {}).value || 'Your card title';
+    const play = (q('iplay') || {}).checked;
+    const time = (q('itime') || {}).value || '';
+    const pos = (root.querySelector('input[type=radio]:checked') || {}).value || 'left';
+    box.innerHTML = '<div class="imgcard-preview' + (pos === 'right' ? ' pos-right' : '') + '">' +
+      (img ? '<img src="' + esc(img) + '" alt="">' : '<div style="aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:#9db1d9;font-weight:700">Image preview</div>') +
+      (play ? '<span class="ic-play">▶</span>' : '') +
+      (time ? '<span class="ic-time">' + esc(time) + '</span>' : '') +
+      '<span class="ic-title">' + esc(title) + '</span></div>';
+  }
+
+  // tabs
+  $$('.tab', root).forEach(tab => tab.addEventListener('click', () => {
+    $$('.tab', root).forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    ['link', 'image', 'media'].forEach(k => {
+      const pane = root.querySelector('[data-pane="' + k + '"]');
+      if (pane) pane.classList.toggle('hidden', tab.dataset.stab !== k);
+    });
+    updateImagePreview();
+  }));
+  // media ending buttons
+  $$('[data-ending]', root).forEach(b => {
+    if (b.dataset.ending === mediaEnding) b.classList.add('active');
+    b.addEventListener('click', () => {
+      mediaEnding = b.dataset.ending;
+      $$('[data-ending]', root).forEach(x => x.classList.toggle('active', x === b));
+      updatePreview();
+    });
+  });
+  // live updates
+  ['dest', 'domain', 'ending', 'mdest', 'mdomain'].forEach(f => {
+    const el = q(f); if (el) { el.addEventListener('input', updatePreview); el.addEventListener('change', updatePreview); }
+  });
+  ['iimage', 'ititle', 'itime'].forEach(f => {
+    const el = q(f); if (el) el.addEventListener('input', updateImagePreview);
+  });
+  const playEl = q('iplay'); if (playEl) playEl.addEventListener('change', updateImagePreview);
+  $$('input[type=radio]', root).forEach(r => r.addEventListener('change', updateImagePreview));
+  $$('[data-f="alias"]', root).forEach(aliasEl => {
+    let timer = null;
+    aliasEl.addEventListener('input', () => {
+      updatePreview();
+      const details = aliasEl.closest('details');
+      const msg = details ? details.querySelector('[data-f="aliasmsg"]') : null;
+      if (!msg) return;
+      const v = aliasEl.value.trim().toLowerCase();
+      clearTimeout(timer);
+      if (!v) { msg.textContent = '3–30 characters: lowercase letters, numbers, hyphens.'; msg.className = 'hint'; return; }
+      if (!/^[a-z0-9-]{3,30}$/.test(v)) { msg.textContent = 'Invalid alias format.'; msg.className = 'avail-bad'; return; }
+      msg.textContent = 'Checking availability…'; msg.className = 'hint';
+      timer = setTimeout(async () => {
+        const taken = await dbCodeTaken(v);
+        msg.textContent = taken ? '✗ Already taken — try another.' : '✓ Available';
+        msg.className = taken ? 'avail-bad' : 'avail-ok';
+      }, 350);
+    });
+  });
+  async function doShorten(btn, errEl, payload) {
+    if (errEl) errEl.textContent = '';
+    busy(btn, true);
+    try {
+      const link = await createLinkCore(payload);
+      showResultModal(link);
+      toast('Short link created ✓');
+      if (opts.onCreated) opts.onCreated(link);
+      refreshHomeStats();
+    } catch (e) {
+      if (errEl) errEl.textContent = e.message || 'Something went wrong.';
+      else toast(e.message || 'Something went wrong.', true);
+    } finally { busy(btn, false); }
+  }
+  const b1 = root.querySelector('[data-act="shorten"]');
+  if (b1) b1.addEventListener('click', () => doShorten(b1, q('err'), {
+    destination: q('dest').value, domain: q('domain').value, ending: q('ending').value,
+    alias: allowAlias ? curAlias() : '', type: 'link', owner: owner()
+  }));
+  const b2 = root.querySelector('[data-act="shorten-image"]');
+  if (b2) b2.addEventListener('click', () => {
+    const img = (q('iimage') || {}).value || '';
+    if (!isValidUrl(normalizeUrl(img))) { q('ierr').textContent = 'Please enter a valid image URL (JPG/PNG/WebP).'; return; }
+    if (!/\.(jpe?g|png|webp)(\?.*)?$/i.test(img) && !/images|image|cdn|unsplash|picsum/i.test(img)) {
+      q('ierr').textContent = 'Image URL should point to a JPG, PNG or WebP image.'; return;
+    }
+    doShorten(b2, q('ierr'), {
+      destination: q('idest').value, domain: q('idomain').value, ending: q('iending').value,
+      alias: allowAlias ? curAlias() : '', type: 'image', owner: owner(),
+      image: normalizeUrl(img), title: q('ititle').value, description: q('idesc').value,
+      showPlay: q('iplay').checked, videoTime: q('itime').value,
+      position: (root.querySelector('input[type=radio]:checked') || {}).value || 'left'
+    });
+  });
+  const b3 = root.querySelector('[data-act="shorten-media"]');
+  if (b3) b3.addEventListener('click', () => doShorten(b3, q('merr'), {
+    destination: q('mdest').value, domain: q('mdomain').value, ending: mediaEnding,
+    alias: allowAlias ? curAlias() : '', type: 'media', owner: owner()
+  }));
+  updatePreview();
+  updateImagePreview();
+}
+function mountShortener(el, opts) {
+  if (!el) return;
+  el.innerHTML = shortenerHTML('s' + Math.floor(Math.random() * 1e6), !!(opts && opts.allowAlias));
+  attachShortener(el, opts || {});
+}
+</script>
+
+<script>
+/* =====================================================================
+   Home widgets, FAQ/blog/legal rendering, redirect engine, router
+   ===================================================================== */
+function faqHTML(items) {
+  return items.map(f =>
+    '<div class="faq-item"><button type="button">' + esc(f.q) + '<span class="chev">+</span></button>' +
+    '<div class="faq-a">' + esc(f.a) + '</div></div>').join('');
+}
+function bindFaq(container) {
+  if (!container) return;
+  $$('.faq-item > button', container).forEach(b => b.addEventListener('click', () => {
+    const item = b.parentElement;
+    const open = item.classList.contains('open');
+    $$('.faq-item', container).forEach(i => { i.classList.remove('open'); $('.chev', i).textContent = '+'; });
+    if (!open) { item.classList.add('open'); $('.chev', item).textContent = '–'; }
+  }));
+}
+function animateNum(el, target) {
+  if (!el) return;
+  const start = performance.now(), dur = 700;
+  function step(t) {
+    const p = Math.min(1, (t - start) / dur);
+    el.textContent = fmt(Math.round(target * p));
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+async function refreshHomeStats() {
+  try {
+    const [links, clicks] = await Promise.all([dbAllLinks(), dbAllClicks()]);
+    const today = new Date().toDateString();
+    const todayClicks = clicks.filter(c => new Date(c.ts).toDateString() === today).length;
+    animateNum($('#statLinks'), links.length);
+    animateNum($('#statClicks'), clicks.length);
+    animateNum($('#statToday'), todayClicks);
+    const at = $('#anTotalClicks'); if (at) at.textContent = fmt(clicks.length);
+    // auth side mini stats
+    $$('[data-auth-stat]').forEach(el => {
+      const k = el.dataset.authStat;
+      el.textContent = fmt(k === 'links' ? links.length : k === 'clicks' ? clicks.length : SETTINGS.domains.length);
+    });
+    // top countries
+    const ac = $('#anCountries');
+    if (ac) {
+      const tops = countBy(clicks, 'country').filter(([k]) => k && k !== 'Unknown').slice(0, 5);
+      ac.innerHTML = tops.length
+        ? tops.map(([k, v]) => '<div class="kv"><span>' + esc(k) + '</span><b>' + Math.round(v / clicks.length * 100) + '%</b></div>').join('')
+        : '<p class="empty-note">No clicks yet — share a short link to see data here.</p>';
+    }
+    // recent feed
+    const af = $('#anFeed');
+    if (af) {
+      af.innerHTML = clicks.length
+        ? clicks.slice(0, 5).map(c => '<div class="feed-item"><span class="dot"></span><span><b>' + esc(c.country || 'Unknown') + '</b> · ' + esc(c.device || '') + '<br><span style="color:var(--muted);font-size:13px">via ' + esc(c.referrer || 'Direct') + ' · ' + timeAgo(c.ts) + '</span></span></div>').join('')
+        : '<p class="empty-note">No clicks yet.</p>';
+    }
+    // feature mini bars (clicks per day, last 12 days)
+    const fb = $('#featureBars');
+    if (fb) {
+      const days = [];
+      for (let i = 11; i >= 0; i--) {
+        const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - i);
+        days.push(clicks.filter(c => { const cd = new Date(c.ts); cd.setHours(0, 0, 0, 0); return cd.getTime() === d.getTime(); }).length);
+      }
+      const max = Math.max(1, ...days);
+      fb.innerHTML = days.map(v => '<i style="height:' + Math.max(6, v / max * 100) + '%"></i>').join('');
+    }
+  } catch (e) { /* stats are best-effort */ }
+}
+
+function renderHomeBits() {
+  // marquee
+  const names = PLATFORMS.concat(PLATFORMS);
+  $('#marqueeTrack').innerHTML = names.map(n => '<span>' + esc(n) + '</span>').join('');
+  // domain chips
+  $('#domainChips').innerHTML = SETTINGS.domains.map(d => '<span class="domain-chip">' + esc(d) + '</span>').join('');
+  const fd = $('#featureDomains');
+  if (fd) fd.innerHTML = SETTINGS.domains.slice(0, 3).map((d, i) =>
+    '<div class="preview-line" style="margin-bottom:7px">' + esc(d) + '/<b>' + ['k3x9a', 'p82mq', 'z7bn4'][i] + '</b></div>').join('');
+  // guides = first 3 articles
+  $('#homeGuides').innerHTML = ARTICLES.slice(0, 3).map(blogCardHTML).join('');
+  // faq
+  $('#homeFaq').innerHTML = faqHTML(FAQ_HOME);
+  bindFaq($('#homeFaq'));
+  // home shortener
+  mountShortener($('#homeShortener'), { allowAlias: !!currentUser });
+}
+
+/* ---------------- blog ---------------- */
+let blogState = { q: '', cat: 'All', page: 1 };
+function blogCardHTML(a) {
+  return '<article class="blog-card"><div class="thumb" style="background:' + a.color + '">' + a.icon + '</div>' +
+    '<div class="b-body"><span class="cat">' + esc(a.cat) + '</span>' +
+    '<h3><a href="#/article/' + a.slug + '" style="color:inherit">' + esc(a.title) + '</a></h3>' +
+    '<p>' + esc(a.excerpt) + '</p>' +
+    '<div class="blog-meta">' + a.mins + ' min read</div></div></article>';
+}
+function renderBlog() {
+  const cats = ['All', 'Guides', 'Analytics', 'Comparisons', 'Developers'];
+  $('#blogCats').innerHTML = cats.map(c =>
+    '<button type="button" class="pill' + (blogState.cat === c ? ' active' : '') + '" data-cat="' + c + '">' + c + '</button>').join(' ');
+  $$('#blogCats .pill').forEach(p => p.addEventListener('click', () => { blogState.cat = p.dataset.cat; blogState.page = 1; renderBlog(); }));
+  const list = ARTICLES.filter(a =>
+    (blogState.cat === 'All' || a.cat === blogState.cat) &&
+    (a.title + ' ' + a.excerpt).toLowerCase().includes(blogState.q.toLowerCase()));
+  const per = 9, pages = Math.max(1, Math.ceil(list.length / per));
+  if (blogState.page > pages) blogState.page = pages;
+  const slice = list.slice((blogState.page - 1) * per, blogState.page * per);
+  $('#blogGrid').innerHTML = slice.length ? slice.map(blogCardHTML).join('') : '<p class="empty-note">No articles match your search.</p>';
+  $('#blogPager').innerHTML = pages > 1
+    ? Array.from({ length: pages }, (_, i) => '<button type="button" class="pill' + (blogState.page === i + 1 ? ' active' : '') + '" data-page="' + (i + 1) + '">' + (i + 1) + '</button>').join('')
+    : '';
+  $$('#blogPager .pill').forEach(p => p.addEventListener('click', () => { blogState.page = Number(p.dataset.page); renderBlog(); }));
+}
+function renderArticle(slug) {
+  const a = ARTICLES.find(x => x.slug === slug);
+  const box = $('#articleBody');
+  if (!a) { box.innerHTML = '<div class="notfound"><div class="big">404</div><p>Article not found.</p></div>'; return; }
+  const heads = a.paras.map((_, i) => 'Part ' + (i + 1));
+  box.innerHTML =
+    '<div class="crumb"><a href="#/">Home</a> › <a href="#/blog">Blog</a> › ' + esc(a.cat) + '</div>' +
+    '<span class="cat" style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--orange-dark)">' + esc(a.cat) + '</span>' +
+    '<h1 style="color:var(--navy);font-size:clamp(25px,3.6vw,34px);line-height:1.25;margin:8px 0">' + esc(a.title) + '</h1>' +
+    '<div class="blog-meta">' + a.mins + ' min read · JetLink guides</div>' +
+    '<div class="toc"><b style="color:var(--navy)">In this article</b>' + heads.map((h, i) => '<a href="#/article/' + a.slug + '" data-toc="' + i + '">' + (i + 1) + '. ' + esc(h) + '</a>').join('') + '</div>' +
+    a.paras.map((p, i) => '<h2 id="toc-' + i + '" style="color:var(--navy);margin:22px 0 8px;font-size:20px">' + esc(heads[i]) + '</h2><p style="color:#33456b">' + esc(p) + '</p>').join('') +
+    '<h2 style="color:var(--navy);margin:30px 0 10px;font-size:20px">Related articles</h2>' +
+    '<div class="cards3">' + ARTICLES.filter(x => x.slug !== a.slug && x.cat === a.cat).concat(ARTICLES.filter(x => x.slug !== a.slug && x.cat !== a.cat)).slice(0, 3).map(blogCardHTML).join('') + '</div>';
+  $$('#articleBody [data-toc]').forEach(l => l.addEventListener('click', ev => {
+    ev.preventDefault();
+    const t = $('#toc-' + l.dataset.toc);
+    if (t) t.scrollIntoView({ behavior: 'smooth' });
+  }));
+}
+
+/* ---------------- FAQ / help / legal pages ---------------- */
+function renderFaqPage() {
+  $('#faqGroups').innerHTML = FAQ_GROUPS.map(g =>
+    '<h2 style="color:var(--navy);margin:26px 0 12px;font-size:20px">' + esc(g.title) + '</h2>' +
+    '<div class="faq-list" style="margin:0">' + faqHTML(g.items) + '</div>').join('');
+  $$('#faqGroups .faq-list').forEach(bindFaq);
+}
+function renderHelpTopics(filter) {
+  const list = HELP_TOPICS.filter(t => !filter || (t.q + ' ' + t.a).toLowerCase().includes(filter.toLowerCase()));
+  $('#helpTopics').innerHTML = list.length ? faqHTML(list) : '<p class="empty-note">No topics match.</p>';
+  bindFaq($('#helpTopics'));
+}
+function renderLegal(key) {
+  const page = LEGAL[key];
+  if (!page) return;
+  $('#legalTitle').textContent = page.title;
+  $('#legalBody').innerHTML =
+    '<div class="template-note">Template text — replace with your real company name, address and jurisdiction before using this site commercially.</div>' +
+    '<p><i>Last updated: ' + dateStr(Date.now()) + '</i></p>' +
+    page.sections.map(([h, p]) => '<h2>' + esc(h) + '</h2><p>' + esc(p) + '</p>').join('');
+}
+
+/* ---------------- redirect engine ---------------- */
+async function fetchCountry() {
+  try {
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 2500);
+    const r = await fetch('https://ipapi.co/json/', { signal: ctrl.signal });
+    clearTimeout(to);
+    const j = await r.json();
+    return j.country_name || '';
+  } catch (e) { return ''; }
+}
+async function recordClickAndGo(link) {
+  const country = await fetchCountry();
+  try {
+    await dbRecordClick({
+      code: link.code, owner: link.owner || 'guest', ts: Date.now(),
+      country, device: deviceFromUA(), referrer: document.referrer ? new URL(document.referrer).hostname : 'Direct'
+    });
+  } catch (e) { /* never block the redirect on analytics */ }
+  location.replace(link.destination);
+}
+function botPreviewHTML(link) {
+  return '<div style="max-width:560px;margin:60px auto;padding:0 20px">' +
+    '<p class="hint" style="text-align:center;margin-bottom:12px">🤖 Bot / crawler view — this is what social apps see. Real visitors are redirected instead.</p>' +
+    '<div class="og-mock"><img src="' + esc(link.image || '') + '" alt="">' +
+    '<div class="og-body"><div class="og-t">' + esc(link.title || link.destination) + '</div>' +
+    '<div class="og-d">' + esc(link.description || link.destination) + '</div>' +
+    '<div class="og-d" style="margin-top:4px">' + esc(prettyUrl(link)) + '</div></div></div>' +
+    '<p style="text-align:center;margin-top:16px"><a class="btn" href="' + esc(link.destination) + '" rel="noopener">Continue to destination →</a></p></div>';
+}
+async function handleRedirect(code, isBot) {
+  showView('redirect');
+  const box = $('#redirectBody');
+  box.innerHTML = '<div class="notfound"><p style="color:var(--muted)">Opening your link…</p></div>';
+  const link = await dbGetLink(code);
+  if (!link) { showView('notfound'); return; }
+  if (isBot) { box.innerHTML = botPreviewHTML(link); window.scrollTo(0, 0); return; }
+  if (link.type === 'image') {
+    box.innerHTML = '<div class="landing"><div class="imgcard-preview' + (link.position === 'right' ? ' pos-right' : '') + '" id="landingCard">' +
+      '<img src="' + esc(link.image || '') + '" alt="">' +
+      (link.showPlay ? '<span class="ic-play">▶</span>' : '') +
+      (link.videoTime ? '<span class="ic-time">' + esc(link.videoTime) + '</span>' : '') +
+      '<span class="ic-title">' + esc(link.title || '') + '</span></div></div>';
+    $('#landingCard').addEventListener('click', () => recordClickAndGo(link));
+    window.scrollTo(0, 0);
+    return;
+  }
+  recordClickAndGo(link);
+}
+
+/* ---------------- router ---------------- */
+const VIEW_NAMES = ['home', 'pricing', 'blog', 'article', 'help', 'faq', 'about', 'contact', 'report-abuse', 'legal', 'login', 'register', 'forgot-password', 'dashboard', 'admin', 'redirect', 'notfound'];
+function showView(name) {
+  VIEW_NAMES.forEach(v => {
+    const el = document.querySelector('[data-view="' + v + '"]');
+    if (el) el.classList.toggle('hidden', v !== name);
+  });
+  if (name !== 'redirect') window.scrollTo(0, 0);
+}
+function route() {
+  const raw = (location.hash || '#/').replace(/^#\/?/, '');
+  const parts = raw.split('/').filter(Boolean);
+  const page = parts[0] || '';
+  const botQ = /[?&]bot=1/.test(location.hash) || /[?&]bot=1/.test(location.search);
+
+  if (page === 'r' && parts[1]) { handleRedirect(parts[1], botQ); return; }
+  switch (page) {
+    case '': showView('home'); refreshHomeStats(); break;
+    case 'pricing': showView('pricing'); break;
+    case 'blog': showView('blog'); renderBlog(); break;
+    case 'article': showView('article'); renderArticle(parts[1]); break;
+    case 'help': showView('help'); renderHelpTopics(''); break;
+    case 'faq': showView('faq'); renderFaqPage(); break;
+    case 'about': showView('about'); break;
+    case 'contact': showView('contact'); break;
+    case 'report-abuse': showView('report-abuse'); break;
+    case 'login': showView('login'); refreshHomeStats(); break;
+    case 'register': showView('register'); refreshHomeStats(); break;
+    case 'forgot-password': showView('forgot-password'); break;
+    case 'dashboard':
+      if (!currentUser) { location.hash = '#/login'; return; }
+      showView('dashboard'); renderDashboard(); break;
+    case 'admin':
+      if (!currentUser) { location.hash = '#/login'; return; }
+      if (currentUser.role !== 'admin') { toast('Admin access only.', true); location.hash = '#/dashboard'; return; }
+      showView('admin'); renderAdmin(); break;
+    default:
+      if (LEGAL[page]) { showView('legal'); renderLegal(page); }
+      else showView('notfound');
+  }
+}
+
+/* ---------------- header ---------------- */
+function updateHeader() {
+  const box = $('#headerAuth');
+  if (currentUser) {
+    box.innerHTML =
+      (currentUser.role === 'admin' ? '<a href="#/admin" style="font-weight:700;color:var(--navy)">Admin</a>' : '') +
+      '<a href="#/dashboard" style="font-weight:700;color:var(--navy)">Dashboard</a>' +
+      '<span class="user-chip">👤 ' + esc(currentUser.name || currentUser.email) + '</span>' +
+      '<button class="btn ghost small" id="hdrLogout" type="button">Logout</button>';
+    const lo = $('#hdrLogout');
+    if (lo) lo.addEventListener('click', async () => { await authLogout(); toast('Logged out.'); location.hash = '#/'; });
+    const md = $('#mmDash'); if (md) md.classList.remove('hidden');
+    const ma = $('#mmAdmin'); if (ma) ma.classList.toggle('hidden', currentUser.role !== 'admin');
+  } else {
+    box.innerHTML = '<a class="login-link" href="#/login" style="font-weight:700;color:var(--navy)">Log in</a><a class="btn" href="#/register">Sign up now</a>';
+    const md = $('#mmDash'); if (md) md.classList.add('hidden');
+    const ma = $('#mmAdmin'); if (ma) ma.classList.add('hidden');
+  }
+  // re-mount home shortener so the alias box matches auth state
+  const hs = $('#homeShortener');
+  if (hs && hs.dataset.mountedFor !== (currentUser ? 'user' : 'guest')) {
+    hs.dataset.mountedFor = currentUser ? 'user' : 'guest';
+    mountShortener(hs, { allowAlias: !!currentUser });
+  }
+}
+</script>
+
+<script>
+/* =====================================================================
+   Dashboard, admin, forms, modal wiring, init
+   ===================================================================== */
+let dashTab = 'overview';
+let dashAnalyticsCode = null;
+
+function drawBarChart(canvas, data) {
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth || 600, h = 210;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d'); if (!ctx) return; // canvas unsupported: skip chart instead of crashing the view
+  ctx.scale(dpr, dpr);
+  const max = Math.max(1, ...data.map(d => d.value));
+  const padB = 22, padT = 14, bw = w / data.length;
+  ctx.font = '11px system-ui'; ctx.fillStyle = '#5b6b8c'; ctx.strokeStyle = '#e3e9f5';
+  for (let i = 0; i <= 3; i++) {
+    const y = padT + (h - padB - padT) * i / 3;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+  data.forEach((d, i) => {
+    const bh = (h - padB - padT) * (d.value / max);
+    const x = i * bw + bw * 0.22, y = h - padB - bh;
+    ctx.fillStyle = '#2563eb';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, bw * 0.56, bh, [4, 4, 0, 0]); else ctx.rect(x, y, bw * 0.56, bh);
+    ctx.fill();
+    ctx.fillStyle = '#0b1b3a'; ctx.textAlign = 'center';
+    if (d.value) ctx.fillText(String(d.value), x + bw * 0.28, y - 4);
+    ctx.fillStyle = '#5b6b8c';
+    ctx.fillText(d.label, x + bw * 0.28, h - 6);
+  });
+}
+function last14Days(clicks) {
+  const out = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - i);
+    const v = clicks.filter(c => { const cd = new Date(c.ts); cd.setHours(0, 0, 0, 0); return cd.getTime() === d.getTime(); }).length;
+    out.push({ label: (d.getMonth() + 1) + '/' + d.getDate(), value: v });
+  }
+  return out;
+}
+function breakdownHTML(clicks, key, title) {
+  const tops = countBy(clicks, key).slice(0, 6);
+  return '<div class="panel"><h3 style="color:var(--navy);margin-bottom:8px">' + esc(title) + '</h3>' +
+    (tops.length ? tops.map(([k, v]) => '<div class="kv"><span>' + esc(k) + '</span><b>' + v + ' (' + Math.round(v / clicks.length * 100) + '%)</b></div>').join('')
+      : '<p class="empty-note">No data yet.</p>') + '</div>';
+}
+
+async function renderDashboard() {
+  $$('#dashSide [data-dtab]').forEach(b => b.classList.toggle('active', b.dataset.dtab === dashTab));
+  const main = $('#dashMain');
+  if (!currentUser) return;
+  if (dashTab === 'overview') {
+    const [links, clicks] = await Promise.all([dbMyLinks(currentUser.uid), dbClicksByOwner(currentUser.uid)]);
+    const today = new Date().toDateString();
+    const todayClicks = clicks.filter(c => new Date(c.ts).toDateString() === today).length;
+    const earnings = (clicks.length / 1000 * (SETTINGS.cpmRate || 0));
+    main.innerHTML =
+      '<div class="stat-cards">' +
+      '<div class="stat-card"><div class="num">' + fmt(links.length) + '</div><div class="lbl">Total links</div></div>' +
+      '<div class="stat-card"><div class="num">' + fmt(clicks.length) + '</div><div class="lbl">Total clicks</div></div>' +
+      '<div class="stat-card"><div class="num">' + fmt(todayClicks) + '</div><div class="lbl">Clicks today</div></div>' +
+      '<div class="stat-card"><div class="num">$' + earnings.toFixed(2) + '</div><div class="lbl">Estimated earnings*</div></div>' +
+      '</div>' +
+      '<p class="hint" style="margin:-6px 0 14px">*Estimate only — clicks ÷ 1,000 × CPM rate ($' + Number(SETTINGS.cpmRate || 0).toFixed(2) + '). This is NOT real payout data; no ad/revenue backend is connected.</p>' +
+      '<div class="panel" style="margin-bottom:18px"><h3 style="color:var(--navy);margin-bottom:10px">Clicks — last 14 days</h3><canvas class="chart" id="ovChart"></canvas></div>' +
+      '<div class="cards3" style="align-items:start">' +
+      breakdownHTML(clicks, 'country', 'Top countries') +
+      breakdownHTML(clicks, 'device', 'Devices') +
+      breakdownHTML(clicks, 'referrer', 'Referrers') +
+      '</div>';
+    drawBarChart($('#ovChart'), last14Days(clicks));
+  }
+  if (dashTab === 'create') {
+    main.innerHTML = '<div id="dashShortener"></div>';
+    mountShortener($('#dashShortener'), { allowAlias: true, onCreated: () => toast('Saved to My Links') });
+  }
+  if (dashTab === 'links') {
+    const links = await dbMyLinks(currentUser.uid);
+    main.innerHTML = '<div class="table-scroll"><table class="links"><thead><tr><th>Short URL</th><th>Destination</th><th>Type</th><th>Clicks</th><th>Created</th><th>Actions</th></tr></thead><tbody>' +
+      (links.length ? links.map(l =>
+        '<tr><td><a href="' + esc(workingUrl(l.code)) + '" target="_blank" rel="noopener">' + esc(prettyUrl(l)) + '</a></td>' +
+        '<td class="dest">' + esc(l.destination) + '</td><td>' + esc(l.type) + '</td><td>' + (l.clicks || 0) + '</td><td>' + dateStr(l.createdAt) + '</td>' +
+        '<td style="white-space:nowrap">' +
+        '<button class="mini-btn" data-lact="copy" data-code="' + esc(l.code) + '">Copy</button>' +
+        '<button class="mini-btn" data-lact="qr" data-code="' + esc(l.code) + '">QR</button>' +
+        '<button class="mini-btn" data-lact="analytics" data-code="' + esc(l.code) + '">Analytics</button>' +
+        '<button class="mini-btn" data-lact="edit" data-code="' + esc(l.code) + '">Edit</button>' +
+        '<button class="mini-btn red" data-lact="del" data-code="' + esc(l.code) + '">Delete</button>' +
+        '</td></tr>').join('')
+        : '<tr><td colspan="6" class="empty-note">No links yet — create your first one.</td></tr>') +
+      '</tbody></table></div>';
+    $$('#dashMain [data-lact]').forEach(b => b.addEventListener('click', async () => {
+      const code = b.dataset.code;
+      const link = await dbGetLink(code);
+      if (!link) { toast('Link not found.', true); return; }
+      if (b.dataset.lact === 'copy') {
+        try { await navigator.clipboard.writeText(workingUrl(code)); toast('Copied ✓'); }
+        catch (e) { toast(workingUrl(code)); }
+      }
+      if (b.dataset.lact === 'qr') showResultModal(link);
+      if (b.dataset.lact === 'analytics') { dashAnalyticsCode = code; dashTab = 'analytics'; renderDashboard(); }
+      if (b.dataset.lact === 'edit') {
+        const dest = prompt('Destination URL:', link.destination);
+        if (dest === null) return;
+        const nd = normalizeUrl(dest);
+        if (!isValidUrl(nd)) { toast('Invalid URL.', true); return; }
+        const title = prompt('Title (used on cards/previews):', link.title || '');
+        await dbUpdateLink(code, { destination: nd, title: title || '' });
+        toast('Link updated ✓'); renderDashboard();
+      }
+      if (b.dataset.lact === 'del') {
+        if (!confirm('Delete this link permanently? Its click history will be removed too.')) return;
+        await dbDeleteLink(code);
+        toast('Link deleted.'); renderDashboard(); refreshHomeStats();
+      }
+    }));
+  }
+  if (dashTab === 'bulk') {
+    const domainOpts = SETTINGS.domains.map(d => '<option>' + esc(d) + '</option>').join('');
+    const endingOpts = ENDINGS.map(e => '<option value="' + esc(e) + '">' + (e ? esc(e) : 'No ending') + '</option>').join('');
+    main.innerHTML = '<div class="panel">' +
+      '<h3 style="color:var(--navy);margin-bottom:10px">Bulk shorten</h3>' +
+      '<div class="field"><label>One URL per line (up to 1,000)</label><textarea id="bulkText" placeholder="https://example.com/one&#10;https://example.com/two"></textarea></div>' +
+      '<div class="grid2"><div class="field"><label>Domain</label><select id="bulkDomain">' + domainOpts + '</select></div>' +
+      '<div class="field"><label>Link ending</label><select id="bulkEnding">' + endingOpts + '</select></div></div>' +
+      '<div class="err-text" id="bulkErr"></div>' +
+      '<button class="btn" id="bulkBtn" type="button">Shorten all</button>' +
+      '<div id="bulkResults" style="margin-top:16px"></div></div>';
+    $('#bulkBtn').addEventListener('click', async () => {
+      const lines = $('#bulkText').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const err = $('#bulkErr'); err.textContent = '';
+      if (!lines.length) { err.textContent = 'Paste at least one URL.'; return; }
+      if (lines.length > 1000) { err.textContent = 'Maximum 1,000 URLs at a time.'; return; }
+      const btn = $('#bulkBtn'); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Working…';
+      const made = [], failed = [];
+      for (const line of lines) {
+        try {
+          made.push(await createLinkCore({ destination: line, domain: $('#bulkDomain').value, ending: $('#bulkEnding').value, type: 'link', owner: currentUser.uid }));
+        } catch (e) { failed.push(line + ' — ' + e.message); }
+      }
+      btn.disabled = false; btn.textContent = 'Shorten all';
+      const box = $('#bulkResults');
+      box.innerHTML =
+        (made.length ? '<p style="font-weight:700;color:var(--navy);margin-bottom:8px">' + made.length + ' link(s) created:</p>' +
+          made.map(l => '<div class="kv"><span>' + esc(workingUrl(l.code)) + '</span><b>→ ' + esc(l.destination.length > 46 ? l.destination.slice(0, 46) + '…' : l.destination) + '</b></div>').join('') +
+          '<div style="margin-top:12px"><button class="mini-btn" id="bulkCopyAll" type="button">Copy all</button> <button class="mini-btn" id="bulkCsv" type="button">Download CSV</button></div>' : '') +
+        (failed.length ? '<p class="err-text">' + failed.length + ' failed:<br>' + failed.map(esc).join('<br>') + '</p>' : '');
+      const ca = $('#bulkCopyAll');
+      if (ca) ca.addEventListener('click', async () => { try { await navigator.clipboard.writeText(made.map(l => workingUrl(l.code)).join('\n')); toast('All links copied ✓'); } catch (e) { toast('Copy failed.', true); } });
+      const cv = $('#bulkCsv');
+      if (cv) cv.addEventListener('click', () => downloadFile('jetlink-bulk.csv', 'short_url,destination\n' + made.map(l => workingUrl(l.code) + ',' + l.destination.replace(/,/g, ' ')).join('\n'), 'text/csv'));
+      refreshHomeStats();
+    });
+  }
+  if (dashTab === 'analytics') {
+    const links = await dbMyLinks(currentUser.uid);
+    if (!dashAnalyticsCode && links.length) dashAnalyticsCode = links[0].code;
+    const link = links.find(l => l.code === dashAnalyticsCode);
+    main.innerHTML = '<div class="panel" style="margin-bottom:18px"><div class="field" style="margin:0"><label>Choose a link</label>' +
+      '<select id="anSelect">' + links.map(l => '<option value="' + esc(l.code) + '"' + (link && l.code === link.code ? ' selected' : '') + '>' + esc(prettyUrl(l)) + ' → ' + esc(l.destination.slice(0, 50)) + '</option>').join('') + '</select></div></div>' +
+      '<div id="anDetail">' + (link ? '' : '<p class="empty-note">Create a link first.</p>') + '</div>';
+    const sel = $('#anSelect');
+    if (sel) sel.addEventListener('change', () => { dashAnalyticsCode = sel.value; renderDashboard(); });
+    if (link) {
+      const clicks = await dbClicksFor(link.code);
+      $('#anDetail').innerHTML =
+        '<div class="stat-cards"><div class="stat-card"><div class="num">' + fmt(clicks.length) + '</div><div class="lbl">Total clicks</div></div>' +
+        '<div class="stat-card"><div class="num">' + esc(link.type) + '</div><div class="lbl">Type</div></div>' +
+        '<div class="stat-card"><div class="num">' + dateStr(link.createdAt) + '</div><div class="lbl">Created</div></div>' +
+        '<div class="stat-card"><div class="num"><button class="btn small" id="anCsv" type="button">Export CSV</button></div><div class="lbl">Report</div></div></div>' +
+        '<div class="panel" style="margin-bottom:18px"><h3 style="color:var(--navy);margin-bottom:10px">Clicks — last 14 days</h3><canvas class="chart" id="anChart"></canvas></div>' +
+        '<div class="cards3" style="align-items:start">' + breakdownHTML(clicks, 'country', 'Countries') + breakdownHTML(clicks, 'device', 'Devices') + breakdownHTML(clicks, 'referrer', 'Referrers') + '</div>' +
+        '<div class="panel" style="margin-top:18px"><h3 style="color:var(--navy);margin-bottom:8px">Recent clicks</h3>' +
+        (clicks.length ? clicks.slice(0, 15).map(c => '<div class="feed-item"><span class="dot"></span><span><b>' + esc(c.country || 'Unknown') + '</b> · ' + esc(c.device || '') + ' · via ' + esc(c.referrer || 'Direct') + '<br><span style="color:var(--muted);font-size:13px">' + new Date(c.ts).toLocaleString() + '</span></span></div>').join('') : '<p class="empty-note">No clicks yet.</p>') + '</div>';
+      drawBarChart($('#anChart'), last14Days(clicks));
+      $('#anCsv').addEventListener('click', () => downloadFile('jetlink-' + link.code + '-clicks.csv', clicksToCSV(clicks), 'text/csv'));
+    }
+  }
+  if (dashTab === 'api') {
+    const key = currentUser.apiKey || '';
+    main.innerHTML = '<div class="panel">' +
+      '<h3 style="color:var(--navy);margin-bottom:8px">Your API key</h3>' +
+      '<div class="rowflex"><input type="text" class="grow" id="apiKeyField" readonly value="' + esc(key) + '"><button class="btn ghost" id="apiKeyCopy" type="button">Copy</button></div>' +
+      '<p class="hint">Keep it secret — it can create and delete links on the Node backend. Regenerating invalidates the old key there.</p>' +
+      '<button class="btn small orange" id="apiKeyRegen" type="button">Regenerate key</button>' +
+      '<h3 style="color:var(--navy);margin:22px 0 8px">API docs (Node server mode)</h3>' +
+      '<pre class="code">POST   /api/v1/links        create a link\nGET    /api/v1/links        list links\nDELETE /api/v1/links/:code  delete a link\nHeader: x-api-key: YOUR_KEY</pre>' +
+      '<pre class="code">curl -X POST ' + esc(location.origin) + '/api/v1/links \\\n  -H "x-api-key: ' + esc(key || 'YOUR_KEY') + '" \\\n  -H "Content-Type: application/json" \\\n  -d \'{"url":"https://example.com/long","alias":"my-link"}\'</pre>' +
+      '<h3 style="color:var(--navy);margin:22px 0 8px">Try it here (works in every mode)</h3>' +
+      '<div class="field"><label>Long URL</label><div class="rowflex"><input type="url" class="grow" id="apiTestUrl" placeholder="https://example.com/something"><button class="btn" id="apiTestBtn" type="button">Create via API</button></div></div>' +
+      '<pre class="code" id="apiTestOut">// The JSON response will appear here</pre></div>';
+    $('#apiKeyCopy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(key); toast('API key copied ✓'); } catch (e) { toast('Copy failed.', true); } });
+    $('#apiKeyRegen').addEventListener('click', async () => {
+      if (!confirm('Regenerate your API key? The old key stops working on the Node backend.')) return;
+      const nk = genApiKey();
+      currentUser.apiKey = nk;
+      await dbSaveUserProfile(currentUser.uid, { apiKey: nk });
+      toast('New API key generated ✓'); renderDashboard();
+    });
+    $('#apiTestBtn').addEventListener('click', async () => {
+      const out = $('#apiTestOut');
+      try {
+        const link = await createLinkCore({ destination: $('#apiTestUrl').value, type: 'link', owner: currentUser.uid });
+        out.textContent = JSON.stringify({ status: 201, code: link.code, short_url: workingUrl(link.code), display_url: prettyUrl(link), destination: link.destination }, null, 2);
+        toast('Link created via API ✓'); refreshHomeStats();
+      } catch (e) { out.textContent = JSON.stringify({ status: 400, error: e.message }, null, 2); }
+    });
+  }
+  if (dashTab === 'settings') {
+    main.innerHTML = '<div class="panel">' +
+      '<h3 style="color:var(--navy);margin-bottom:12px">Profile</h3>' +
+      '<div class="field"><label>Display name</label><input type="text" id="setName" value="' + esc(currentUser.name || '') + '"></div>' +
+      '<div class="field"><label>Email</label><input type="email" value="' + esc(currentUser.email) + '" disabled></div>' +
+      '<button class="btn" id="setSave" type="button">Save profile</button>' +
+      '<h3 style="color:var(--navy);margin:26px 0 12px">Password</h3>' +
+      '<div class="field"><label>New password</label><input type="password" id="setPass" placeholder="8+ characters, letters and numbers"></div>' +
+      '<button class="btn ghost" id="setPassBtn" type="button">Change password</button>' +
+      '<h3 style="color:var(--navy);margin:26px 0 8px">Monetisation</h3>' +
+      '<p class="hint">Site CPM rate: <b>$' + Number(SETTINGS.cpmRate || 0).toFixed(2) + ' per 1,000 clicks</b> (set by the admin). Earnings in Overview are estimates only.</p>' +
+      '<h3 style="color:var(--err);margin:26px 0 8px">Danger zone</h3>' +
+      '<p class="hint" style="margin-bottom:10px">Deleting your account removes your profile. In demo mode your local links are removed too; in Firebase mode ask an admin to finish the deletion in the console.</p>' +
+      '<button class="btn danger" id="setDelete" type="button">Delete my account</button></div>';
+    $('#setSave').addEventListener('click', async () => {
+      const name = $('#setName').value.trim();
+      if (!name) { toast('Name cannot be empty.', true); return; }
+      currentUser.name = name;
+      await dbSaveUserProfile(currentUser.uid, { name });
+      updateHeader(); toast('Profile saved ✓');
+    });
+    $('#setPassBtn').addEventListener('click', async () => {
+      const pw = $('#setPass').value;
+      if (!/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(pw)) { toast('Password needs 8+ characters with letters and numbers.', true); return; }
+      if (MODE === 'firebase') {
+        try { await FB.auth.currentUser.updatePassword(pw); toast('Password changed ✓'); }
+        catch (e) { toast('For security, log in again before changing the password.', true); }
+      } else {
+        const users = LS.get('users', []);
+        const u = users.find(x => x.uid === currentUser.uid);
+        if (u) { u.pw = demoHash(pw, u.salt); LS.set('users', users); toast('Password changed (demo mode) ✓'); }
+      }
+    });
+    $('#setDelete').addEventListener('click', async () => {
+      if (!confirm('Really delete your account? This cannot be undone.')) return;
+      if (MODE === 'firebase') { toast('Firebase mode: delete your user in Firebase Console → Authentication, or ask the admin.', true); return; }
+      const myLinks = await dbMyLinks(currentUser.uid);
+      for (const l of myLinks) await dbDeleteLink(l.code);
+      LS.set('users', LS.get('users', []).filter(u => u.uid !== currentUser.uid));
+      await authLogout();
+      toast('Account deleted.');
+      location.hash = '#/';
+    });
+  }
+}
+
+/* ---------------- admin ---------------- */
+async function renderAdmin() {
+  const box = $('#adminBody');
+  const [links, users, messages, reports] = await Promise.all([dbAllLinks(), dbListUsers(), dbListCol('messages'), dbListCol('reports')]);
+  box.innerHTML =
+    '<div class="stat-cards">' +
+    '<div class="stat-card"><div class="num">' + fmt(links.length) + '</div><div class="lbl">All links</div></div>' +
+    '<div class="stat-card"><div class="num">' + fmt(links.reduce((s, l) => s + (l.clicks || 0), 0)) + '</div><div class="lbl">All clicks</div></div>' +
+    '<div class="stat-card"><div class="num">' + fmt(users.length) + '</div><div class="lbl">Users</div></div>' +
+    '<div class="stat-card"><div class="num">' + fmt(messages.length + reports.length) + '</div><div class="lbl">Messages + reports</div></div></div>' +
+    '<h3 style="color:var(--navy);margin:18px 0 10px">All links</h3>' +
+    '<div class="table-scroll"><table class="links"><thead><tr><th>Code</th><th>Destination</th><th>Owner</th><th>Clicks</th><th>Created</th><th></th></tr></thead><tbody>' +
+    (links.length ? links.map(l => '<tr><td>' + esc(l.code) + (l.ending || '') + '</td><td class="dest">' + esc(l.destination) + '</td><td>' + esc(l.owner) + '</td><td>' + (l.clicks || 0) + '</td><td>' + dateStr(l.createdAt) + '</td><td><button class="mini-btn red" data-adel="' + esc(l.code) + '">Delete</button></td></tr>').join('') : '<tr><td colspan="6" class="empty-note">No links yet.</td></tr>') +
+    '</tbody></table></div>' +
+    '<h3 style="color:var(--navy);margin:24px 0 10px">Users</h3>' +
+    '<div class="table-scroll"><table class="links"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead><tbody>' +
+    (users.length ? users.map(u => '<tr><td>' + esc(u.name || '') + '</td><td>' + esc(u.email || '') + '</td><td>' + esc(u.role || 'user') + '</td><td>' + (u.createdAt ? dateStr(u.createdAt) : '—') + '</td></tr>').join('') : '<tr><td colspan="4" class="empty-note">No users yet.</td></tr>') +
+    '</tbody></table></div>' +
+    '<div class="cards2" style="align-items:start;margin-top:24px">' +
+    '<div class="panel"><h3 style="color:var(--navy);margin-bottom:8px">Contact messages (' + messages.length + ')</h3>' +
+    (messages.length ? messages.slice().reverse().map(m => '<div class="kv"><span><b>' + esc(m.name) + '</b> · ' + esc(m.subject) + '<br><span style="color:var(--muted)">' + esc(m.message) + '</span></span></div>').join('') : '<p class="empty-note">None yet.</p>') + '</div>' +
+    '<div class="panel"><h3 style="color:var(--navy);margin-bottom:8px">Abuse reports (' + reports.length + ')</h3>' +
+    (reports.length ? reports.slice().reverse().map(r => '<div class="kv"><span><b>' + esc(r.linkRef) + '</b> · ' + esc(r.reason) + '<br><span style="color:var(--muted)">' + esc(r.details || '') + ' — ' + esc(r.email) + '</span></span></div>').join('') : '<p class="empty-note">None yet.</p>') + '</div></div>' +
+    '<div class="panel" style="margin-top:24px"><h3 style="color:var(--navy);margin-bottom:10px">Site settings</h3>' +
+    '<div class="grid2"><div class="field"><label>CPM rate (USD per 1,000 clicks)</label><input type="number" step="0.01" min="0" id="admCpm" value="' + Number(SETTINGS.cpmRate || 0) + '"></div>' +
+    '<div class="field"><label>Domain pool (one per line)</label><textarea id="admDomains" style="min-height:120px">' + esc(SETTINGS.domains.join('\n')) + '</textarea></div></div>' +
+    '<button class="btn" id="admSave" type="button">Save settings</button></div>';
+  $$('#adminBody [data-adel]').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('Delete link ' + b.dataset.adel + '?')) return;
+    await dbDeleteLink(b.dataset.adel);
+    toast('Link deleted.'); renderAdmin(); refreshHomeStats();
+  }));
+  $('#admSave').addEventListener('click', async () => {
+    const domains = $('#admDomains').value.split('\n').map(s => s.trim()).filter(Boolean);
+    if (!domains.length) { toast('Keep at least one domain.', true); return; }
+    await dbSaveSettings({ cpmRate: parseFloat($('#admCpm').value) || 0, domains });
+    toast('Settings saved ✓');
+    renderHomeBits(); refreshHomeStats();
+  });
+}
+
+/* ---------------- forms ---------------- */
+function wireForms() {
+  $('#loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const err = $('#liErr'); err.textContent = '';
+    const btn = $('#liBtn'); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Logging in…';
+    try {
+      currentUser = await authLogin($('#liEmail').value, $('#liPass').value, $('#liKeep').checked);
+      updateHeader();
+      toast('Welcome back, ' + (currentUser.name || '') + ' ✓');
+      location.hash = '#/dashboard';
+    } catch (ex) { err.textContent = ex.message || 'Login failed.'; }
+    btn.disabled = false; btn.textContent = 'Log in';
+  });
+  const wireGoogle = (btnId, errId) => {
+    const b = document.getElementById(btnId);
+    if (!b) return;
+    b.addEventListener('click', async () => {
+      const err = document.getElementById(errId); if (err) err.textContent = '';
+      b.disabled = true;
+      try {
+        currentUser = await authGoogle();
+        updateHeader();
+        toast('Welcome, ' + (currentUser.name || '') + ' ✓');
+        location.hash = '#/dashboard';
+      } catch (ex) {
+        if (err) err.textContent = (ex && ex.code === 'auth/popup-closed-by-user') ? 'Google sign-in was cancelled.' : (ex.message || 'Google sign-in failed.');
+      }
+      b.disabled = false;
+    });
+  };
+  wireGoogle('liGoogle', 'liErr');
+  wireGoogle('rgGoogle', 'rgErr');
+  $('#registerForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const err = $('#rgErr'); err.textContent = '';
+    const name = $('#rgName').value.trim(), email = $('#rgEmail').value.trim();
+    const p1 = $('#rgPass').value, p2 = $('#rgPass2').value;
+    if (name.length < 2) { err.textContent = 'Please enter your full name.'; return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'Please enter a valid email address.'; return; }
+    if (!/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(p1)) { err.textContent = 'Password must be 8+ characters with letters and numbers.'; return; }
+    if (p1 !== p2) { err.textContent = 'Passwords do not match.'; return; }
+    if (!$('#rgAgree').checked) { err.textContent = 'Please agree to the Terms and Privacy Policy.'; return; }
+    const btn = $('#rgBtn'); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Creating account…';
+    try {
+      currentUser = await authRegister(name, email, p1);
+      updateHeader();
+      toast('Account created — welcome to JetLink 🎉');
+      location.hash = '#/dashboard';
+    } catch (ex) { err.textContent = ex.message || 'Registration failed.'; }
+    btn.disabled = false; btn.textContent = 'Create account';
+  });
+  $('#forgotForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const err = $('#fpErr'); err.textContent = '';
+    const email = $('#fpEmail').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'Please enter a valid email address.'; return; }
+    try {
+      const how = await authReset(email);
+      if (how === 'firebase') toast('Password reset email sent — check your inbox ✓');
+      else toast('Demo mode: password reset emails need Firebase. Your demo password is only in this browser.', true);
+    } catch (ex) { err.textContent = ex.message || 'Could not send reset email.'; }
+  });
+  $('#contactForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const err = $('#ctErr'); err.textContent = '';
+    const name = $('#ctName').value.trim(), email = $('#ctEmail').value.trim(), msg = $('#ctMsg').value.trim();
+    if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || msg.length < 5) {
+      err.textContent = 'Please fill in your name, a valid email and a message.'; return;
+    }
+    await dbAddDoc('messages', { name, email, subject: $('#ctSubject').value, message: msg, ts: Date.now() });
+    e.target.reset();
+    toast('Message sent — Dev X Sabbir\'s support team will reply soon ✓');
+  });
+  $('#reportForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const err = $('#rpErr'); err.textContent = '';
+    const ref = $('#rpUrl').value.trim(), email = $('#rpEmail').value.trim();
+    if (!ref || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'Please give the short link and a valid email.'; return; }
+    await dbAddDoc('reports', { linkRef: ref, email, reason: $('#rpReason').value, details: $('#rpDetails').value.trim(), ts: Date.now() });
+    e.target.reset();
+    toast('Report submitted — our team will review it ✓');
+  });
+  $('#blogSearch').addEventListener('input', e => { blogState.q = e.target.value; blogState.page = 1; renderBlog(); });
+  $('#helpSearch').addEventListener('input', e => renderHelpTopics(e.target.value));
+}
+
+/* ---------------- modal wiring ---------------- */
+function wireModal() {
+  $('#rmDone').addEventListener('click', closeResultModal);
+  $('#resultModal').addEventListener('click', e => { if (e.target.id === 'resultModal') closeResultModal(); });
+  $('#rmCopy').addEventListener('click', async () => {
+    const btn = $('#rmCopy');
+    try {
+      await navigator.clipboard.writeText($('#rmUrl').value);
+      btn.textContent = '✓ Copied';
+      toast('Short link copied ✓');
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    } catch (e) {
+      $('#rmUrl').select(); document.execCommand && document.execCommand('copy');
+      btn.textContent = '✓ Copied';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    }
+  });
+  async function downloadQr(format) {
+    if (!modalLink) return;
+    const url = qrUrl(workingUrl(modalLink.code), 400, format);
+    try {
+      const r = await fetch(url);
+      const blob = await r.blob();
+      downloadFile('jetlink-qr-' + modalLink.code + '.' + (format || 'png'), blob);
+    } catch (e) { window.open(url, '_blank'); }
+  }
+  $('#rmQrPng').addEventListener('click', () => downloadQr(null));
+  $('#rmQrSvg').addEventListener('click', () => downloadQr('svg'));
+  $('#rmBotToggle').addEventListener('change', e => {
+    const box = $('#rmBotPreview');
+    if (e.target.checked && modalLink) { box.innerHTML = botPreviewHTML(modalLink); box.classList.remove('hidden'); }
+    else box.classList.add('hidden');
+  });
+}
+
+/* ---------------- misc wiring ---------------- */
+function wireChrome() {
+  $('#yearNow').textContent = new Date().getFullYear();
+  $('#hamburgerBtn').addEventListener('click', () => $('#mobileMenu').classList.toggle('open'));
+  $$('#mobileMenu a').forEach(a => a.addEventListener('click', () => $('#mobileMenu').classList.remove('open')));
+  $$('[data-scroll]').forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    const id = a.dataset.scroll;
+    const go = () => { const t = document.getElementById(id); if (t) t.scrollIntoView({ behavior: 'smooth' }); };
+    const cur = (location.hash || '#/').replace(/^#\/?/, '').split('/')[0];
+    if (cur) { location.hash = '#/'; setTimeout(go, 350); } else go();
+  }));
+  $$('#dashSide [data-dtab]').forEach(b => b.addEventListener('click', () => { dashTab = b.dataset.dtab; renderDashboard(); }));
+  const lo = $('#dashLogout');
+  if (lo) lo.addEventListener('click', async () => { await authLogout(); toast('Logged out.'); location.hash = '#/'; });
+  // pricing FAQ (small)
+  const pf = $('#pricingFaq');
+  if (pf) {
+    pf.innerHTML = faqHTML([
+      { q: 'Is the free plan a trial?', a: 'No. It is a standing plan with the limits listed above. It does not expire and never asks for a card.' },
+      { q: 'What happens if I pass 10,000 links?', a: 'Your existing links keep working. You just pause creating new ones until you clear out old links — that is the only limit.' },
+      { q: 'Are earnings part of the free plan?', a: 'The dashboard shows an estimated earnings figure from your clicks and the site CPM rate so you can model revenue. It is an estimate, not a payout system.' }
+    ]);
+    bindFaq(pf);
+  }
+}
+
+/* ---------------- init ---------------- */
+const RESERVED_PATHS = ['index.html', 'server.js', 'firebase.json', 'firestore.rules', 'vercel.json', 'package.json', 'readme.md', 'db.json', 'favicon.ico'];
+function pathCode() {
+  const seg = location.pathname.replace(/^\/+|\/+$/g, '');
+  if (!seg || seg.includes('/')) return null;
+  const m = seg.match(/^([a-z0-9-]{3,30})(\.(mp4|stream|video|link|vip|xyz))?$/i);
+  if (!m) return null;
+  if (RESERVED_PATHS.includes(seg.toLowerCase())) return null;
+  return m[1];
+}
+(async function init() {
+  if (MODE === 'firebase') {
+    try {
+      firebase.initializeApp(firebaseConfig);
+      FB.auth = firebase.auth();
+      FB.db = firebase.firestore();
+    } catch (e) { console.warn('Firebase init failed, falling back to demo mode', e); }
+  }
+  if (MODE === 'local') $('#demoBanner').classList.remove('hidden');
+  wireChrome(); wireForms(); wireModal();
+  try { SETTINGS = await dbGetSettings(); } catch (e) {}
+  try { currentUser = await authRestore(); } catch (e) { currentUser = null; }
+  updateHeader();
+  renderHomeBits();
+  refreshHomeStats();
+  // Vercel / Node path-style short link: /abc123 or /abc123.mp4
+  const pc = pathCode();
+  if (pc) {
+    const botQ = /[?&]bot=1/.test(location.search);
+    handleRedirect(pc, botQ);
+    return;
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>

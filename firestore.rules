@@ -1,0 +1,61 @@
+rules_version = '2';
+// JetLink Firestore security rules
+// Collections: users, links, clicks, settings, messages, reports
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    function isOwner(ownerUid) {
+      return isSignedIn() && request.auth.uid == ownerUid;
+    }
+
+    // ---- User profiles: own doc only; admins can read all ----
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid) || isAdmin();
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    // ---- Links: public read (needed so anyone opening a short link can resolve it) ----
+    // Create: signed-in users create their own; guests may create docs with owner == 'guest'.
+    // Update/delete: only the owner or an admin. Click counters may be incremented by anyone.
+    match /links/{code} {
+      allow read: if true;
+      allow create: if (isSignedIn() && request.resource.data.owner == request.auth.uid)
+                    || request.resource.data.owner == 'guest';
+      allow update: if isOwner(resource.data.owner) || isAdmin()
+                    || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['clicks']));
+      allow delete: if isOwner(resource.data.owner) || isAdmin();
+    }
+
+    // ---- Click records: anyone may record a click; only the link owner / admin may read ----
+    match /clicks/{clickId} {
+      allow create: if true;
+      allow read: if isOwner(resource.data.owner) || isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // ---- Site settings (CPM rate, domain pool): readable by all, writable by admins ----
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ---- Contact messages & abuse reports: anyone may submit, only admins may read ----
+    match /messages/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+    match /reports/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}
